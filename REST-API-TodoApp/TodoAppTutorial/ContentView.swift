@@ -1,8 +1,8 @@
 //
 //  ContentView.swift
-//  REST-API-TodoApp
+//  TodoAppTutorial
 //
-//  Created by 정정욱 on 7/12/24.
+//  Created by Jeff Jeong on 2022/11/09.
 //
 
 import SwiftUI
@@ -12,13 +12,15 @@ struct ContentView: View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
-                .foregroundStyle(.tint)
+                .foregroundColor(.accentColor)
             Text("Hello, world!")
         }
         .padding()
     }
 }
 
-#Preview {
-    ContentView()
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        ContentView()
+    }
 }

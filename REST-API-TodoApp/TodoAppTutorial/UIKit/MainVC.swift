@@ -10,22 +10,43 @@ import UIKit
 import SwiftUI
 
 
-class MainVC: UIViewController {
+class MainVC: UIViewController{
     
+    @IBOutlet weak var myTableView: UITableView!
+    
+    var dummyDataList = ["aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa", "aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa", "aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa", "aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         print(#fileID, #function, #line, "- ")
         self.view.backgroundColor = .systemYellow
+        
+        self.myTableView.register(TodoCell.uinib, forCellReuseIdentifier: TodoCell.reuseIdentifier)
+        self.myTableView.dataSource = self
     }
-    
 }
 
+extension MainVC : UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dummyDataList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TodoCell.reuseIdentifier, for: indexPath) as? TodoCell else {
+            return UITableViewCell()
+        }
+        
+        return cell
+        
+    }
+}
 
 // 3️⃣ UIViewController를 스유에서 활용가능하게 익스텐션 만들기
 extension MainVC {
     
-    // VCRepresentable는 스유뷰 자체를 말함 
+    // VCRepresentable는 스유뷰 자체를 말함
     private struct VCRepresentable : UIViewControllerRepresentable {
         
         // 스유뷰로 만들 뷰컨을 정의
@@ -68,4 +89,30 @@ extension StoryBoarded {
         return storyboard.instantiateViewController(withIdentifier: String(describing: self)) as! Self
     }
 }
+
+
+
+protocol Nibbed {
+    static var uinib: UINib { get }
+}
+
+extension Nibbed {
+    static var uinib: UINib {
+        return UINib(nibName: String(describing: Self.self), bundle: nil)
+    }
+}
+
+extension UITableViewCell : Nibbed { }
+extension UITableViewCell : ReuseIdentifiable {}
+
+protocol ReuseIdentifiable {
+    static var reuseIdentifier: String { get }
+}
+
+extension ReuseIdentifiable {
+    static var reuseIdentifier: String {
+        return String(describing: Self.self)
+    }
+}
+
 

@@ -1,0 +1,15 @@
+{
+  "originHash" : "e5d95a88cdb63bfb1b52768ac5b2159ae44d024c67461de83178b37c11195a51",
+  "pins" : [
+    {
+      "identity" : "multipartform",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/davbeck/MultipartForm",
+      "state" : {
+        "revision" : "c91979ea956a360bf84f0cc480afbcc7c946c753",
+        "version" : "0.1.0"
+      }
+    }
+  ],
+  "version" : 3
+}

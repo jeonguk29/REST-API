@@ -35,18 +35,29 @@ class TodosVM: ObservableObject {
 //            }
 //        })
         
-        TodosAPI.searchTodos(searchTerm: "빡코딩") { [weak self] result in
-
+//        TodosAPI.searchTodos(searchTerm: "빡코딩") { [weak self] result in
+//
+//            guard let self = self else { return }
+//
+//            switch result {
+//            case .success(let todosResponse):
+//                print("TodosVM - search todosResponse: \(todosResponse)")
+//            case .failure(let failure):
+//                print("TodosVM - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        }//
+        
+        TodosAPI.addATodo(title: "유유유유유유유", isDone: false, completion: { [weak self] result in
             guard let self = self else { return }
-
             switch result {
-            case .success(let todosResponse):
-                print("TodosVM - search todosResponse: \(todosResponse)")
+            case .success(let aTodoResponse):
+                print("TodosVM addATodo - aTodoResponse: \(aTodoResponse)")
             case .failure(let failure):
-                print("TodosVM - failure: \(failure)")
+                print("TodosVM addATodo - failure: \(failure)")
                 self.handleError(failure)
             }
-        }//
+        })
         
     }// init
     

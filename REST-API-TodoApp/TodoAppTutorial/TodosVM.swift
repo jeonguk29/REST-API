@@ -70,8 +70,22 @@ class TodosVM: ObservableObject {
 //            }
 //        })
         
-        TodosAPI.editTodoJson(id: 5427,
-                              title: "유유유유333333",
+//        TodosAPI.editTodoJson(id: 5427,
+//                              title: "유유유유333333",
+//                              isDone: true,
+//                              completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let aTodoResponse):
+//                print("TodosVM addATodo - aTodoResponse: \(aTodoResponse)")
+//            case .failure(let failure):
+//                print("TodosVM addATodo - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        })
+        
+        TodosAPI.editTodo(id: 5427,
+                              title: "유유유유5555555",
                               isDone: true,
                               completion: { [weak self] result in
             guard let self = self else { return }

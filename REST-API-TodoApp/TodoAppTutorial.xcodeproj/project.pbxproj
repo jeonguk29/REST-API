@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		6491B0A52C44FE3500C2D825 /* URL+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6491B0A32C44FE3500C2D825 /* URL+Ext.swift */; };
 		6491B0A82C45051F00C2D825 /* MultipartForm in Frameworks */ = {isa = PBXBuildFile; productRef = 6491B0A72C45051F00C2D825 /* MultipartForm */; };
+		6491B0AA2C451D2300C2D825 /* URLRequest+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6491B0A92C451D2300C2D825 /* URLRequest+Ext.swift */; };
 		6496CB262C42B81700381F0F /* TodosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6496CB242C42B81700381F0F /* TodosAPI.swift */; };
 		6496CB282C42BC6400381F0F /* TodosVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6496CB272C42BC6300381F0F /* TodosVM.swift */; };
 		6496CB2B2C42BC9300381F0F /* TodosResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6496CB292C42BC9300381F0F /* TodosResponse.swift */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		6491B0A32C44FE3500C2D825 /* URL+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Ext.swift"; sourceTree = "<group>"; };
+		6491B0A92C451D2300C2D825 /* URLRequest+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Ext.swift"; sourceTree = "<group>"; };
 		6496CB242C42B81700381F0F /* TodosAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosAPI.swift; sourceTree = "<group>"; };
 		6496CB272C42BC6300381F0F /* TodosVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosVM.swift; sourceTree = "<group>"; };
 		6496CB292C42BC9300381F0F /* TodosResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosResponse.swift; sourceTree = "<group>"; };
@@ -61,6 +63,7 @@
 		6491B0A42C44FE3500C2D825 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				6491B0A92C451D2300C2D825 /* URLRequest+Ext.swift */,
 				6491B0A32C44FE3500C2D825 /* URL+Ext.swift */,
 			);
 			path = Extensions;
@@ -235,6 +238,7 @@
 				F2A438F4291D31ED006402B0 /* TodosView.swift in Sources */,
 				F2C9BF69291BE21B003BC36C /* ContentView.swift in Sources */,
 				6496CB2B2C42BC9300381F0F /* TodosResponse.swift in Sources */,
+				6491B0AA2C451D2300C2D825 /* URLRequest+Ext.swift in Sources */,
 				F2C9BF79291BE37A003BC36C /* MainVC.swift in Sources */,
 				6496CB282C42BC6400381F0F /* TodosVM.swift in Sources */,
 				F2A438F7291D351C006402B0 /* Button+Style.swift in Sources */,

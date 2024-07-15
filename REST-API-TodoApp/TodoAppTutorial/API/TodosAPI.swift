@@ -549,6 +549,84 @@ enum TodosAPI {
         }.resume()
     }
     
+    /// 할 일 수정하기 - PUT urlEncoded
+    /// -H 'Content-Type: application/x-www-form-urlencoded' \   - 라고 되어있음 encoded 로 들어간다는건 뭔가 암호화 식으로 들어간다는 뜻
+    /// -d 'title=%EA%B0%80%EC%A6%88%EC%95%84%EC%95%84%EC%95%84%EC%95%84%EC%95%84%EC%95%84%EC%95%84%EC%95%84&is_done=true'
+    /// 위 처럼 들어감
+    /// - Parameters:
+    ///   - id: 수정할 아이템 아이디
+    ///   - title: 타이틀
+    ///   - isDone: 완료여부
+    ///   - completion: 응답결과
+    static func editTodo(id: Int,
+                             title: String,
+                             isDone: Bool = false,
+                             completion: @escaping (Result<BaseResponse<Todo>, ApiError>) -> Void){
+        
+        // 1. urlRequest 를 만든다
+        
+        let urlString = baseURL + "/todos/\(id)"
+        
+        guard let url = URL(string: urlString) else {
+            return completion(.failure(ApiError.notAllowedUrl))
+        }
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "PUT"
+        urlRequest.addValue("application/json", forHTTPHeaderField: "accept")
+        
+        urlRequest.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        
+        let requestParams : [String : String] = ["title": title, "is_done" : "\(isDone)"]
+        
+        urlRequest.percentEncodeParameters(parameters: requestParams) // 헤당 메서드가 바디에 넣는거 까지 해줌 
+        
+        // 2. urlSession 으로 API를 호출한다
+        // 3. API 호출에 대한 응답을 받는다
+        URLSession.shared.dataTask(with: urlRequest) { data, urlResponse, err in
+            
+            print("data: \(data)")
+            print("urlResponse: \(urlResponse)")
+            print("err: \(err)")
+            
+            
+            if let error = err {
+                return completion(.failure(ApiError.unknown(error)))
+            }
+                 
+            guard let httpResponse = urlResponse as? HTTPURLResponse else {
+                print("bad status code")
+                return completion(.failure(ApiError.unknown(nil)))
+            }
+            
+            switch httpResponse.statusCode {
+            case 401:
+                return completion(.failure(ApiError.unauthorized))
+            case 204:
+                return completion(.failure(ApiError.noContent))
+                
+            default: print("default")
+            }
+            
+            if !(200...299).contains(httpResponse.statusCode){
+                return completion(.failure(ApiError.badStatus(code: httpResponse.statusCode)))
+            }
+            
+            if let jsonData = data {
+                // convert data to our swift model
+                do {
+                    // JSON -> Struct 로 변경 즉 디코딩 즉 데이터 파싱
+                  let baseResponse = try JSONDecoder().decode(BaseResponse<Todo>.self, from: jsonData)
+                    
+                    completion(.success(baseResponse))
+                } catch {
+                  // decoding error
+                    completion(.failure(ApiError.decodingError))
+                }
+              }
+            
+        }.resume()
+    }
     
 }
 

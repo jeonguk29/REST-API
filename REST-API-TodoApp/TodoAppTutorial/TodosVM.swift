@@ -11,14 +11,39 @@ class TodosVM: ObservableObject {
     
     init(){
         print(#fileID, #function, #line, "- ")
-        TodosAPI.fetchTodos { result in
-            switch result { // 컴플리션 핸들러 즉 반환 타입을 체크
+        TodosAPI.fetchTodos { [weak self] result in // 클로저를 사용하기 때문에 [weak self] 사용 : 강한 참조 없애기
+            
+            guard let self = self else { return }
+            
+            switch result {
             case .success(let todosResponse):
                 print("TodosVM - todosResponse: \(todosResponse)")
             case .failure(let failure):
                 print("TodosVM - failure: \(failure)")
+                self.handleError(failure)
             }
         }//
     }// init
     
+    
+    /// API 에러처리
+    /// - Parameter err: API 에러
+    fileprivate func handleError(_ err: Error) {
+        
+        if err is TodosAPI.ApiError {
+            let apiError = err as! TodosAPI.ApiError
+            
+            print("handleError : err : \(apiError.info)")
+            
+            switch apiError {
+            case .noContent:
+                print("컨텐츠 없음") // 어떤 기능으로 처리를 해도됨 특정 뷰를 보여준다던지 등등
+            case .unauthorized:
+                print("인증안됨")
+            default:
+                print("default")
+            }
+        }
+        
+    }// handleError
 }

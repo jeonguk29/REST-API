@@ -16,7 +16,7 @@ struct TodosResponse: Decodable {
     let data: [Todo]?
     let meta: Meta?
     let message: String?
-    let hey: String // 디코딩 에러 테스트
+    //let hey: String // 디코딩 에러 테스트
 }
 
 // MARK: - Datum

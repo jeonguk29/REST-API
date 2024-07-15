@@ -24,8 +24,14 @@ struct BaseListResponse<T : Codable> : Codable {
     let data: [T]?
     let meta: Meta?
     let message: String?
-    //let hey: String // 디코딩 에러 테스트
 }
+
+struct BaseResponse<T : Codable> : Codable {
+    let data: T?
+    let message: String?
+    //let code: String? // 우리 서버에는 없지만 실무에서는 서버 개발자들이 code 많이 내려줌
+}
+
 
 // MARK: - Datum
 struct Todo: Codable {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6491B0A52C44FE3500C2D825 /* URL+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6491B0A32C44FE3500C2D825 /* URL+Ext.swift */; };
 		6496CB262C42B81700381F0F /* TodosAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6496CB242C42B81700381F0F /* TodosAPI.swift */; };
 		6496CB282C42BC6400381F0F /* TodosVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6496CB272C42BC6300381F0F /* TodosVM.swift */; };
 		6496CB2B2C42BC9300381F0F /* TodosResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6496CB292C42BC9300381F0F /* TodosResponse.swift */; };
@@ -25,6 +26,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6491B0A32C44FE3500C2D825 /* URL+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Ext.swift"; sourceTree = "<group>"; };
 		6496CB242C42B81700381F0F /* TodosAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosAPI.swift; sourceTree = "<group>"; };
 		6496CB272C42BC6300381F0F /* TodosVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosVM.swift; sourceTree = "<group>"; };
 		6496CB292C42BC9300381F0F /* TodosResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosResponse.swift; sourceTree = "<group>"; };
@@ -54,6 +56,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6491B0A42C44FE3500C2D825 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				6491B0A32C44FE3500C2D825 /* URL+Ext.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		6496CB252C42B81700381F0F /* API */ = {
 			isa = PBXGroup;
 			children = (
@@ -108,6 +118,7 @@
 		F2C9BF65291BE21B003BC36C /* TodoAppTutorial */ = {
 			isa = PBXGroup;
 			children = (
+				6491B0A42C44FE3500C2D825 /* Extensions */,
 				6496CB2A2C42BC9300381F0F /* Data */,
 				6496CB252C42B81700381F0F /* API */,
 				F2A438F5291D350E006402B0 /* Styles */,
@@ -219,6 +230,7 @@
 				F2C9BF79291BE37A003BC36C /* MainVC.swift in Sources */,
 				6496CB282C42BC6400381F0F /* TodosVM.swift in Sources */,
 				F2A438F7291D351C006402B0 /* Button+Style.swift in Sources */,
+				6491B0A52C44FE3500C2D825 /* URL+Ext.swift in Sources */,
 				F2C9BF67291BE21B003BC36C /* TodoAppTutorialApp.swift in Sources */,
 				F2A438FA291D391C006402B0 /* UISearchBarWrapper.swift in Sources */,
 				F2A438FC291D3A9B006402B0 /* TodoRow.swift in Sources */,

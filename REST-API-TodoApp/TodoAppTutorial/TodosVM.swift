@@ -11,20 +11,47 @@ class TodosVM: ObservableObject {
     
     init(){
         print(#fileID, #function, #line, "- ")
-        TodosAPI.fetchTodos { [weak self] result in // 클로저를 사용하기 때문에 [weak self] 사용 : 강한 참조 없애기
-            
+//        TodosAPI.fetchTodos { [weak self] result in // 클로저를 사용하기 때문에 [weak self] 사용 : 강한 참조 없애기
+//            
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            case .success(let todosResponse):
+//                print("TodosVM - todosResponse: \(todosResponse)")
+//            case .failure(let failure):
+//                print("TodosVM - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        }//
+        
+//        TodosAPI.fetchATodo(id: 1550, completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let aTodoResponse):
+//                print("TodosVM - aTodoResponse: \(aTodoResponse)")
+//            case .failure(let failure):
+//                print("TodosVM - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        })
+        
+        TodosAPI.searchTodos(searchTerm: "빡코딩") { [weak self] result in
+
             guard let self = self else { return }
-            
+
             switch result {
             case .success(let todosResponse):
-                print("TodosVM - todosResponse: \(todosResponse)")
+                print("TodosVM - search todosResponse: \(todosResponse)")
             case .failure(let failure):
                 print("TodosVM - failure: \(failure)")
                 self.handleError(failure)
             }
         }//
+        
     }// init
     
+    
+ 
     
     /// API 에러처리
     /// - Parameter err: API 에러

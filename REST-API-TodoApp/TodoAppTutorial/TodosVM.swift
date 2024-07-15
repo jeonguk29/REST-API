@@ -48,7 +48,32 @@ class TodosVM: ObservableObject {
 //            }
 //        }//
         
-        TodosAPI.addATodo(title: "유유유유유유유", isDone: false, completion: { [weak self] result in
+//        TodosAPI.addATodo(title: "유유유유유유유", isDone: false, completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let aTodoResponse):
+//                print("TodosVM addATodo - aTodoResponse: \(aTodoResponse)")
+//            case .failure(let failure):
+//                print("TodosVM addATodo - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        })
+        
+//        TodosAPI.addATodoJson(title: "유유유유유유유2", isDone: false, completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let aTodoResponse):
+//                print("TodosVM addATodo - aTodoResponse: \(aTodoResponse)")
+//            case .failure(let failure):
+//                print("TodosVM addATodo - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        })
+        
+        TodosAPI.editTodoJson(id: 5427,
+                              title: "유유유유333333",
+                              isDone: true,
+                              completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let aTodoResponse):

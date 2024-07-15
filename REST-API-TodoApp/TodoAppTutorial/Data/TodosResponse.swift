@@ -19,6 +19,14 @@ struct TodosResponse: Decodable {
     //let hey: String // 디코딩 에러 테스트
 }
 
+// ⭐️ 서버에서 주는 응답에 형태가 비슷하다면 제네릭으로 만들어서 안에 값만 바꿔 응답 처리하게 만들어 주면 됨 
+struct BaseListResponse<T : Codable> : Codable {
+    let data: [T]?
+    let meta: Meta?
+    let message: String?
+    //let hey: String // 디코딩 에러 테스트
+}
+
 // MARK: - Datum
 struct Todo: Codable {
     let id: Int?

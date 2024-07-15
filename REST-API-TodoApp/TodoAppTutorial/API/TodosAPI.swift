@@ -44,7 +44,7 @@ enum TodosAPI {
     /// 모든 할 일 목록 가져오기
     /// 페이지가 아무것도 안들어오면 1페이지로 설정
     /// 비동기 처리를 위해 completion 클로저 사용 성공시 TodosResponse, 실패시 ApiError 를 반환
-    static func fetchTodos(page: Int = 1, completion: @escaping (Result<TodosResponse, ApiError>) -> Void){
+    static func fetchTodos(page: Int = 1, completion: @escaping (Result<BaseListResponse<Todo>, ApiError>) -> Void){
         
         /*
          curl -X 'GET' \
@@ -96,9 +96,10 @@ enum TodosAPI {
                 // convert data to our swift model
                 do {
                     // JSON -> Struct 로 변경 즉 디코딩 즉 데이터 파싱
-                    let todosResponse = try JSONDecoder().decode(TodosResponse.self, from: jsonData)
-                    let todos = todosResponse.data
-                    print("todosResponse: \(todosResponse)")
+                    // 파싱할때 제네릭으로 만든 BaseListResponse로 받고 안에들어가는 타입은 todo로 하겠다 말하기
+                    let listResponse = try JSONDecoder().decode(BaseListResponse<Todo>.self, from: jsonData)
+                    let todos = listResponse.data
+                    print("todosResponse: \(listResponse)")
                     
                     // 상태 코드는 200인데 파싱한 데이터에 따라서 에러처리
                     guard let todos = todos, // todos가 비어있거나 nil이면 에러 바놘
@@ -106,7 +107,7 @@ enum TodosAPI {
                         return completion(.failure(ApiError.noContent))
                     }
                     
-                    completion(.success(todosResponse))
+                    completion(.success(listResponse))
                 } catch {
                     // decoding error
                     completion(.failure(ApiError.decodingError))

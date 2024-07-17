@@ -110,21 +110,46 @@ class TodosVM: ObservableObject {
 //            }
 //        })
         
+        
         /*
          서비스 레이아웃 쪽에서 이런 뷰컨이나 뷰모델이 API 호출하는데 최대한 모든걸 다 맡김 : 연쇄 호출 하는거 다 알아서 하고 값만 줘 
          */
-        TodosAPI.addATodoAndFetchTodos(
-                                title: "바바바가 추가함 하하하 0111",
-                                completion: { [weak self] result in
-            guard let self = self else { return }
+//        TodosAPI.addATodoAndFetchTodos(
+//                                title: "바바바가 추가함 하하하 0111",
+//                                completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let todolistResponse):
+//                print("TodosVM addATodoAndFetchTodos - todolistResponse: \(todolistResponse.data?.count)")
+//            case .failure(let failure):
+//                print("TodosVM addATodoAndFetchTodos - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        })
+        
+        
+//        TodosAPI.deleteSelectedTodos(selectedTodoIds: [5430, 5424, 5425]) { [weak self] deletedTodos in
+//            print("TodosVM deleteSelectedTodos - deletedTodos: \(deletedTodos)")
+//            /*
+//             deleteATodo에 출력부분이 이렇게 나옴 동시 호출 되는 것을 확인 할 수 있음 
+//             TodoAppTutorial/TodosAPI.swift deleteATodo(id:completion:) 638 - deleteATodo 호출됨 / id: 5430
+//             TodoAppTutorial/TodosAPI.swift deleteATodo(id:completion:) 638 - deleteATodo 호출됨 / id: 5424
+//             TodoAppTutorial/TodosAPI.swift deleteATodo(id:completion:) 638 - deleteATodo 호출됨 / id: 5425
+//             */
+//            
+//        }
+
+        
+        // [3037,3036] 중간에 없는거 하나 넣으면 TodosVM fetchSelectedTodos - failure: noContent를 반환
+        TodosAPI.fetchSelectedTodos(selectedTodoIds: [3933,3036], completion: { result in
             switch result {
-            case .success(let todolistResponse):
-                print("TodosVM addATodoAndFetchTodos - todolistResponse: \(todolistResponse.data?.count)")
+            case .success(let data):
+                print("TodosVM fetchSelectedTodos - data: \(data)")
             case .failure(let failure):
-                print("TodosVM addATodoAndFetchTodos - failure: \(failure)")
-                self.handleError(failure)
+                print("TodosVM fetchSelectedTodos - failure: \(failure)")
             }
         })
+        
         
     }// init
     

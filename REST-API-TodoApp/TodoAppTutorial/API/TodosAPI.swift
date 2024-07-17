@@ -635,6 +635,8 @@ enum TodosAPI {
     static func deleteATodo(id: Int,
                          completion: @escaping (Result<BaseResponse<Todo>, ApiError>) -> Void){
         
+        print(#fileID, #function, #line, "- deleteATodo 호출됨 / id: \(id)")
+        
         // 1. urlRequest 를 만든다
         
         let urlString = baseURL + "/todos/\(id)"
@@ -693,6 +695,67 @@ enum TodosAPI {
               }
             
         }.resume()
+    }
+    
+    
+    /// 클로져 기반 api 동시 처리
+    /// 선택된 할일들 가져오기
+    /// - Parameters:
+    ///   - selectedTodoIds: 선택된 할일 아이디들
+    ///   - completion: 응답 결과
+    ///  동시 처리를 하다가 중간에 하나 에러가 발생했을때 어떻게 처리 즉 어떻게 반환할지(컴플리션으로)
+    static func fetchSelectedTodos(selectedTodoIds: [Int],
+                                    completion: @escaping (Result<[Todo], ApiError>) -> Void){
+        
+        let group = DispatchGroup()
+        
+        // 가져온 할일들
+        var fetchedTodos : [Todo] = [Todo]()
+        
+        // 에러들
+        var apiErrors : [ApiError] = []
+        
+        // 응답 결과들
+        var apiResults = [Int : Result<BaseResponse<Todo>, ApiError>]()
+        
+        
+        selectedTodoIds.forEach { aTodoId in // 특정아이디로 할일을 조회
+            
+            // 디스패치 그룹에 넣음
+            group.enter()
+            
+            self.fetchATodo(id: aTodoId,
+                             completion: { result in
+                switch result {
+                case .success(let response):
+                    // 가져온 할일을 가져온 할일 배열에 넣는다
+                    if let todo = response.data {
+                        fetchedTodos.append(todo)
+                        print("inner fetchATodo - success: \(todo)")
+                    }
+                case .failure(let failure):
+                    apiErrors.append(failure) // 실패시 에러를 에러 배열에 넣는다
+                    print("inner fetchATodo - failure: \(failure)")
+                }
+                group.leave()
+            })// 단일 할일 조회 API 호출
+        }
+        
+        // Configure a completion callback
+        group.notify(queue: .main) {
+            // All requests completed
+            print("모든 api 완료 됨")
+            
+            // 만약 에러가 있다면 에러 올려주기
+            if !apiErrors.isEmpty {
+                if let firstError = apiErrors.first {
+                    completion(.failure(firstError)) // 에러가 존재한다면 첫번째 에러를 던짐
+                    return
+                }
+            }
+            
+            completion(.success(fetchedTodos)) // 아무 이상이 없다면 가져온 할일들 던짐
+        }
     }
 }
 

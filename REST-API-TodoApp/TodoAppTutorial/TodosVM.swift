@@ -98,14 +98,30 @@ class TodosVM: ObservableObject {
 //            }
 //        })
         
-        TodosAPI.deleteATodo(id: 5422,
-                              completion: { [weak self] result in
+//        TodosAPI.deleteATodo(id: 5422,
+//                              completion: { [weak self] result in
+//            guard let self = self else { return }
+//            switch result {
+//            case .success(let aTodoResponse):
+//                print("TodosVM deleteATodo - aTodoResponse: \(aTodoResponse)")
+//            case .failure(let failure):
+//                print("TodosVM deleteATodo - failure: \(failure)")
+//                self.handleError(failure)
+//            }
+//        })
+        
+        /*
+         서비스 레이아웃 쪽에서 이런 뷰컨이나 뷰모델이 API 호출하는데 최대한 모든걸 다 맡김 : 연쇄 호출 하는거 다 알아서 하고 값만 줘 
+         */
+        TodosAPI.addATodoAndFetchTodos(
+                                title: "바바바가 추가함 하하하 0111",
+                                completion: { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case .success(let aTodoResponse):
-                print("TodosVM deleteATodo - aTodoResponse: \(aTodoResponse)")
+            case .success(let todolistResponse):
+                print("TodosVM addATodoAndFetchTodos - todolistResponse: \(todolistResponse.data?.count)")
             case .failure(let failure):
-                print("TodosVM deleteATodo - failure: \(failure)")
+                print("TodosVM addATodoAndFetchTodos - failure: \(failure)")
                 self.handleError(failure)
             }
         })

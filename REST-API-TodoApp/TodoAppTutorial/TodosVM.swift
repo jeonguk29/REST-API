@@ -153,17 +153,35 @@ class TodosVM: ObservableObject {
 //        })
         
         
-        TodosAPI.fetchTodosWithPublisherResult()
-            .sink { result in
-                switch result {
+//        TodosAPI.fetchTodosWithPublisherResult()
+//            .sink { result in
+//                switch result {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .success(let baseListTodoResponse):
+//                    print("TodosVM - fetchTodosWithPublisherResult: \(baseListTodoResponse)")
+//                }
+//            }.store(in: &subscriptions) // 찌꺼기 처리
+//        
+        
+        
+        
+        // 에러가 들어올수도 있어서 receiveCompletion, receiveValue 있는걸로 처리
+        TodosAPI.fetchTodosWithPublisher()
+            .sink( receiveCompletion : { [weak self] completion in
+                guard let self = self else { return }
+                switch completion {
                 case .failure(let failure) :
                     self.handleError(failure)
-                case .success(let baseListTodoResponse):
-                    print("TodosVM - fetchTodosWithPublisherResult: \(baseListTodoResponse)")
+                case .finished:
+                    print("TodosVM - finished")
                 }
-            }.store(in: &subscriptions) // 찌꺼기 처리
-        
-
+            }, receiveValue: { response in
+                print("TodosVM - response: \(response)")
+            })
+            .store(in: &subscriptions) // 찌꺼기 처리
+            
+                
         
     }// init
     

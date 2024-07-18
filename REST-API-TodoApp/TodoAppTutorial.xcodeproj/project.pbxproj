@@ -15,6 +15,7 @@
 		6496CB2B2C42BC9300381F0F /* TodosResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6496CB292C42BC9300381F0F /* TodosResponse.swift */; };
 		64ACDAF02C478E0700A4C169 /* TodosAPI+Closure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64ACDAEF2C478E0700A4C169 /* TodosAPI+Closure.swift */; };
 		64ACDAF42C47B42800A4C169 /* TodosAPI+Combine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64ACDAF32C47B42800A4C169 /* TodosAPI+Combine.swift */; };
+		64ACDB092C4908C000A4C169 /* CombineCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 64ACDB082C4908C000A4C169 /* CombineCocoa */; };
 		F2A438F0291CE4D6006402B0 /* TodoCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F2A438EF291CE4D6006402B0 /* TodoCell.xib */; };
 		F2A438F2291CE6DA006402B0 /* TodoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A438F1291CE6DA006402B0 /* TodoCell.swift */; };
 		F2A438F4291D31ED006402B0 /* TodosView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A438F3291D31ED006402B0 /* TodosView.swift */; };
@@ -57,6 +58,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				64ACDB092C4908C000A4C169 /* CombineCocoa in Frameworks */,
 				6491B0A82C45051F00C2D825 /* MultipartForm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -180,6 +182,7 @@
 			name = TodoAppTutorial;
 			packageProductDependencies = (
 				6491B0A72C45051F00C2D825 /* MultipartForm */,
+				64ACDB082C4908C000A4C169 /* CombineCocoa */,
 			);
 			productName = TodoAppTutorial;
 			productReference = F2C9BF63291BE21B003BC36C /* TodoAppTutorial.app */;
@@ -211,6 +214,7 @@
 			mainGroup = F2C9BF5A291BE21B003BC36C;
 			packageReferences = (
 				6491B0A62C45051F00C2D825 /* XCRemoteSwiftPackageReference "MultipartForm" */,
+				64ACDB072C4908C000A4C169 /* XCRemoteSwiftPackageReference "CombineCocoa" */,
 			);
 			productRefGroup = F2C9BF64291BE21B003BC36C /* Products */;
 			projectDirPath = "";
@@ -467,6 +471,14 @@
 				minimumVersion = 0.1.0;
 			};
 		};
+		64ACDB072C4908C000A4C169 /* XCRemoteSwiftPackageReference "CombineCocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/CombineCommunity/CombineCocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -474,6 +486,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6491B0A62C45051F00C2D825 /* XCRemoteSwiftPackageReference "MultipartForm" */;
 			productName = MultipartForm;
+		};
+		64ACDB082C4908C000A4C169 /* CombineCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 64ACDB072C4908C000A4C169 /* XCRemoteSwiftPackageReference "CombineCocoa" */;
+			productName = CombineCocoa;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -167,7 +167,52 @@ class TodosVM: ObservableObject {
         
         
         // 에러가 들어올수도 있어서 receiveCompletion, receiveValue 있는걸로 처리
-        TodosAPI.fetchTodosWithPublisher()
+//        TodosAPI.fetchTodosWithPublisher()
+//            .sink( receiveCompletion : { [weak self] completion in
+//                guard let self = self else { return }
+//                switch completion {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .finished:
+//                    print("TodosVM - finished")
+//                }
+//            }, receiveValue: { response in
+//                print("TodosVM - response: \(response)")
+//            })
+//            .store(in: &subscriptions) // 찌꺼기 처리
+//            
+//            
+        
+//        TodosAPI.addATodoAndFetchTodosWithPublisher(title: "값을 추가해보자")
+//            .sink( receiveCompletion : { [weak self] completion in
+//                guard let self = self else { return }
+//                switch completion {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .finished:
+//                    print("TodosVM - finished")
+//                }
+//            }, receiveValue: { response in
+//                print("TodosVM - response: \(response)")
+//            })
+//            .store(in: &subscriptions) // 찌꺼기 처리
+        
+        
+//        TodosAPI.addATodoAndFetchTodosWithPublisherNoError(title: "값을 추가해보자")
+//            .sink( receiveCompletion : { [weak self] completion in
+//                guard let self = self else { return }
+//                switch completion {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .finished:
+//                    print("TodosVM - finished")
+//                }
+//            }, receiveValue: { response in
+//                print("TodosVM - response: \(response)") // 에러면 빈 배열이 들어옴
+//            })
+//            .store(in: &subscriptions) // 찌꺼기 처리
+
+        TodosAPI.addATodoAndFetchTodosWithPublisherNoErrorSwitchToLatest(title: "SwitchToLatest를 사용해보자 ")
             .sink( receiveCompletion : { [weak self] completion in
                 guard let self = self else { return }
                 switch completion {
@@ -177,11 +222,10 @@ class TodosVM: ObservableObject {
                     print("TodosVM - finished")
                 }
             }, receiveValue: { response in
-                print("TodosVM - response: \(response)")
+                print("TodosVM - response: \(response)") // 에러면 빈 배열이 들어옴
             })
             .store(in: &subscriptions) // 찌꺼기 처리
-            
-                
+        
         
     }// init
     

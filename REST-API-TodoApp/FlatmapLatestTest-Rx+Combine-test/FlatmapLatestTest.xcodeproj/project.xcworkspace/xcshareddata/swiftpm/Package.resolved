@@ -1,5 +1,4 @@
 {
-  "originHash" : "3f6e9ae2ac673c7c5bb4df4680886545de6422ab92f9f759b0adccfdb1666689",
   "pins" : [
     {
       "identity" : "combinecocoa",
@@ -11,14 +10,14 @@
       }
     },
     {
-      "identity" : "multipartform",
+      "identity" : "rxswift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/davbeck/MultipartForm",
+      "location" : "https://github.com/ReactiveX/RxSwift.git",
       "state" : {
-        "revision" : "c91979ea956a360bf84f0cc480afbcc7c946c753",
-        "version" : "0.1.0"
+        "branch" : "main",
+        "revision" : "ab09f6966d5a14ffe6a7b960cc414ac85468b60b"
       }
     }
   ],
-  "version" : 3
+  "version" : 2
 }

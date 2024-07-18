@@ -9,6 +9,8 @@ import Foundation
 import Combine
 class TodosVM: ObservableObject {
     
+    var subscriptions = Set<AnyCancellable>()
+    
     init(){
         print(#fileID, #function, #line, "- ")
 //        TodosAPI.fetchTodos { [weak self] result in // 클로저를 사용하기 때문에 [weak self] 사용 : 강한 참조 없애기
@@ -141,15 +143,27 @@ class TodosVM: ObservableObject {
 
         
         // [3037,3036] 중간에 없는거 하나 넣으면 TodosVM fetchSelectedTodos - failure: noContent를 반환
-        TodosAPI.fetchSelectedTodos(selectedTodoIds: [3933,3036], completion: { result in
-            switch result {
-            case .success(let data):
-                print("TodosVM fetchSelectedTodos - data: \(data)")
-            case .failure(let failure):
-                print("TodosVM fetchSelectedTodos - failure: \(failure)")
-            }
-        })
+//        TodosAPI.fetchSelectedTodos(selectedTodoIds: [3933,3036], completion: { result in
+//            switch result {
+//            case .success(let data):
+//                print("TodosVM fetchSelectedTodos - data: \(data)")
+//            case .failure(let failure):
+//                print("TodosVM fetchSelectedTodos - failure: \(failure)")
+//            }
+//        })
         
+        
+        TodosAPI.fetchTodosWithPublisherResult()
+            .sink { result in
+                switch result {
+                case .failure(let failure) :
+                    self.handleError(failure)
+                case .success(let baseListTodoResponse):
+                    print("TodosVM - fetchTodosWithPublisherResult: \(baseListTodoResponse)")
+                }
+            }.store(in: &subscriptions) // 찌꺼기 처리
+        
+
         
     }// init
     

@@ -9,7 +9,7 @@ import Foundation
 import MultipartForm
 import Combine
 import CombineCocoa
-//import CombineExt
+import CombineExt
 
 extension TodosAPI {
     
@@ -36,14 +36,14 @@ extension TodosAPI {
         // iOS 자체에서 이벤트를 dataTaskPublisher 이렇게 퍼블리셔로 반환하는게 있음
         /*
          API 호출: URLSession.shared.dataTaskPublisher(for: urlRequest)는 URLSession을 통해 API를 호출하고, Publisher를 반환합니다. 이 Publisher는 data와 urlResponse를 내보냅니다.
-
+         
          map 함수: map 함수는 Publisher에서 내보낸 데이터를 변환하는 데 사용됩니다. 여기서는 data와 urlResponse를 받아서 Result<BaseListResponse<Todo>, ApiError> 타입으로 변환합니다.
          */
         return URLSession.shared.dataTaskPublisher(for: urlRequest)
             .map({ (data: Data, urlResponse: URLResponse) -> Result<BaseListResponse<Todo>, ApiError> in
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     return .failure(ApiError.unknown(nil))
@@ -61,8 +61,8 @@ extension TodosAPI {
                 
                 do {
                     // JSON -> Struct 로 변경 즉 디코딩 즉 데이터 파싱
-                  let listResponse = try JSONDecoder().decode(BaseListResponse<Todo>.self, from: data)
-                  let todos = listResponse.data
+                    let listResponse = try JSONDecoder().decode(BaseListResponse<Todo>.self, from: data)
+                    let todos = listResponse.data
                     print("todosResponse: \(listResponse)")
                     
                     // 상태 코드는 200인데 파싱한 데이터에 따라서 에러처리
@@ -73,19 +73,19 @@ extension TodosAPI {
                     
                     return .success(listResponse)
                 } catch {
-                  // decoding error
+                    // decoding error
                     return .failure(ApiError.decodingError)
                 }
             })
-//            .catch({ err in // 중간에 에러를 잡아서 다른 퍼블리셔로 만들어 줄 수 있음 : 바로 아래 코드와 같은 의미임
-//                return Just(.failure(ApiError.unknown(nil)))
-//            })
+        //            .catch({ err in // 중간에 에러를 잡아서 다른 퍼블리셔로 만들어 줄 수 있음 : 바로 아래 코드와 같은 의미임
+        //                return Just(.failure(ApiError.unknown(nil)))
+        //            })
             .replaceError(with: .failure(ApiError.unknown(nil))) // (에러 -> 데이터로 변경)
-//            .assertNoFailure() // 에러가 나지 않을 것이다 라고 설정 (위험) - 에러시 앱 크래시 
+        //            .assertNoFailure() // 에러가 나지 않을 것이다 라고 설정 (위험) - 에러시 앱 크래시
             .eraseToAnyPublisher()
     }
     
-
+    
     
     /// 모든 할 일 목록 가져오기
     /// OupPut에 ApiError 에러 명시
@@ -112,7 +112,7 @@ extension TodosAPI {
                 
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -154,7 +154,7 @@ extension TodosAPI {
             })
             .eraseToAnyPublisher()
     }
-
+    
     
     /// 특정 할 일 가져오기
     static func fetchATodoWithPublisher(id: Int) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
@@ -178,7 +178,7 @@ extension TodosAPI {
                 
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -217,7 +217,7 @@ extension TodosAPI {
                 
                 return ApiError.unknown(nil)
             }).eraseToAnyPublisher()
-
+        
     }
     
     /// 할 일 검색하기
@@ -241,7 +241,7 @@ extension TodosAPI {
             .tryMap({ (data: Data, urlResponse: URLResponse) -> Data in
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -288,7 +288,7 @@ extension TodosAPI {
     ///   - isDone: 할일 완료여부
     ///   - completion: 응답 결과
     static func addATodoWithPublisher(title: String,
-                         isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
+                                      isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
         
         // 1. urlRequest 를 만든다
         
@@ -320,7 +320,7 @@ extension TodosAPI {
                 
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -367,7 +367,7 @@ extension TodosAPI {
     ///   - isDone: 할일 완료여부
     ///   - completion: 응답 결과
     static func addATodoJsonWithPublisher(title: String,
-                         isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
+                                          isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
         
         // 1. urlRequest 를 만든다
         
@@ -401,7 +401,7 @@ extension TodosAPI {
                 
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -449,8 +449,8 @@ extension TodosAPI {
     ///   - isDone: 완료여부
     ///   - completion: 응답결과
     static func editTodoJsonWithPublisher(id: Int,
-                             title: String,
-                             isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
+                                          title: String,
+                                          isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
         
         // 1. urlRequest 를 만든다
         
@@ -484,7 +484,7 @@ extension TodosAPI {
                 
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -533,8 +533,8 @@ extension TodosAPI {
     ///   - isDone: 완료여부
     ///   - completion: 응답결과
     static func editTodoWithPublisher(id: Int,
-                             title: String,
-                             isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
+                                      title: String,
+                                      isDone: Bool = false) -> AnyPublisher<BaseResponse<Todo>, ApiError>{
         
         // 1. urlRequest 를 만든다
         
@@ -561,7 +561,7 @@ extension TodosAPI {
                 
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -621,7 +621,7 @@ extension TodosAPI {
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "DELETE"
         urlRequest.addValue("application/json", forHTTPHeaderField: "accept")
-
+        
         
         // 2. urlSession 으로 API를 호출한다
         // 3. API 호출에 대한 응답을 받는다
@@ -630,7 +630,7 @@ extension TodosAPI {
                 
                 print("data: \(data)")
                 print("urlResponse: \(urlResponse)")
-                     
+                
                 guard let httpResponse = urlResponse as? HTTPURLResponse else {
                     print("bad status code")
                     throw ApiError.unknown(nil)
@@ -681,18 +681,18 @@ extension TodosAPI {
     ///   - isDone:
     ///   - completion:
     static func addATodoAndFetchTodosWithPublisher(title: String,
-                                      isDone: Bool = false) -> AnyPublisher<[Todo], ApiError>{
+                                                   isDone: Bool = false) -> AnyPublisher<[Todo], ApiError>{
         
         // 1
         return self.addATodoWithPublisher(title: title)
         //                    .flatMap { result in // 이런식으로 결과값을 사용 가능함 지금은 사용하지 않을거라 _ 처리
         //                        self.fetchTodosWithPublisher(result.data?.id)
         //                    }
-                    .flatMap { _ in
-                        self.fetchTodosWithPublisher()
-                    } // BaseListResponse<Todo>
-                    .compactMap{ $0.data } // [Todo] 옵셔널 값을 언래핑
-                    .eraseToAnyPublisher()
+            .flatMap { _ in
+                self.fetchTodosWithPublisher()
+            } // BaseListResponse<Todo>
+            .compactMap{ $0.data } // [Todo] 옵셔널 값을 언래핑
+            .eraseToAnyPublisher()
         
         // 각각의 Map 돌면서 에러가 나면 ApiError를 반환하고 데이터 스트림은 끊어짐
     }
@@ -703,20 +703,20 @@ extension TodosAPI {
     ///   - isDone:
     ///   - completion:
     static func addATodoAndFetchTodosWithPublisherNoError(title: String,
-                                      isDone: Bool = false) -> AnyPublisher<[Todo], Never>{
+                                                          isDone: Bool = false) -> AnyPublisher<[Todo], Never>{
         
         // 1
         return self.addATodoWithPublisher(title: title)
-                    .flatMap { _ in
-                        self.fetchTodosWithPublisher()
-                    } // BaseListResponse<Todo>
-                    .compactMap{ $0.data } // [Todo]
-//                    .catch({ err in // 에러처리2 : 에러오면 잡아서 빈배열 처리
-//                        print("TodosAPI - catch : err : \(err)")
-//                        return Just([]).eraseToAnyPublisher()
-//                    })
-                    .replaceError(with: []) // 에러처리1 :  들어오면 빈배열 처리
-                    .eraseToAnyPublisher()
+            .flatMap { _ in
+                self.fetchTodosWithPublisher()
+            } // BaseListResponse<Todo>
+            .compactMap{ $0.data } // [Todo]
+        //                    .catch({ err in // 에러처리2 : 에러오면 잡아서 빈배열 처리
+        //                        print("TodosAPI - catch : err : \(err)")
+        //                        return Just([]).eraseToAnyPublisher()
+        //                    })
+            .replaceError(with: []) // 에러처리1 :  들어오면 빈배열 처리
+            .eraseToAnyPublisher()
     }
     
     /// 할일 추가 -> 모든 할일 가져오기 - NO 에러 switchToLatest
@@ -725,22 +725,78 @@ extension TodosAPI {
     ///   - isDone:
     ///   - completion:
     static func addATodoAndFetchTodosWithPublisherNoErrorSwitchToLatest(title: String,
-                                      isDone: Bool = false) -> AnyPublisher<[Todo], Never>{
+                                                                        isDone: Bool = false) -> AnyPublisher<[Todo], Never>{
         
         // 1
         return self.addATodoWithPublisher(title: title)
-                    .map { _ in
-                        self.fetchTodosWithPublisher()
-                    } // BaseListResponse<Todo>
-                    .switchToLatest()
-                    .compactMap{ $0.data } // [Todo]
-//                    .catch({ err in
-//                        print("TodosAPI - catch : err : \(err)")
-//                        return Just([]).eraseToAnyPublisher()
-//                    })
-                    .replaceError(with: [])
-                    .eraseToAnyPublisher()
+            .map { _ in
+                self.fetchTodosWithPublisher()
+            } // BaseListResponse<Todo>
+            .switchToLatest()
+            .compactMap{ $0.data } // [Todo]
+        //                    .catch({ err in
+        //                        print("TodosAPI - catch : err : \(err)")
+        //                        return Just([]).eraseToAnyPublisher()
+        //                    })
+            .replaceError(with: [])
+            .eraseToAnyPublisher()
     }
     
-   
+    
+    
+    
+    // MARK: -  동시 API 처리 merge는 단일 아이템으로 들어오고 zip은 컬렉션으로 묶어 반환해줌
+    
+    static func deleteSelectedTodosWithPublisherMergeWithError(selectedTodoIds: [Int]) -> AnyPublisher<Int, ApiError>{
+        
+        //1. 매개변수 배열 -> Observable 스트림 배열
+        
+        //2. 배열로 단일 api들 호출
+        let apiCallPublishers : [AnyPublisher<Int?, ApiError>]
+        = selectedTodoIds.map { id -> AnyPublisher<Int?, ApiError> in
+            return self.deleteATodoWithPublisher(id: id)
+                .map{ $0.data?.id } // Int?
+                .eraseToAnyPublisher()
+        }
+        
+        return Publishers.MergeMany(apiCallPublishers).compactMap{ $0 }.eraseToAnyPublisher()
+        // MergeMany는 퍼블리셔 여러개를 묶어줌
+    }
+    
+    
+    static func deleteSelectedTodosWithPublisherMerge(selectedTodoIds: [Int]) -> AnyPublisher<Int, Never>{
+        
+        //1. 매개변수 배열 -> Observable 스트림 배열
+        
+        //2. 배열로 단일 api들 호출
+        let apiCallPublishers : [AnyPublisher<Int?, Never>]
+        = selectedTodoIds.map { id -> AnyPublisher<Int?, Never> in // 삭제가 된 애들만 반환할거임
+            return self.deleteATodoWithPublisher(id: id)
+                .map{ $0.data?.id } // Int?
+                .replaceError(with: nil) // 에러가 들어오면 nil로 바꿈
+                .eraseToAnyPublisher()
+        }
+        
+        return Publishers.MergeMany(apiCallPublishers).compactMap{ $0 }.eraseToAnyPublisher()
+        
+    }
+    
+    
+    static func deleteSelectedTodosWithPublisherZip(selectedTodoIds: [Int]) -> AnyPublisher<[Int], Never>{
+        
+        //1. 매개변수 배열 -> Observable 스트림 배열
+        
+        //2. 배열로 단일 api들 호출
+        let apiCallPublishers : [AnyPublisher<Int?, Never>]
+        = selectedTodoIds.map { id -> AnyPublisher<Int?, Never> in
+            return self.deleteATodoWithPublisher(id: id)
+                .map{ $0.data?.id } // Int?
+                .replaceError(with: nil)
+                .eraseToAnyPublisher()
+        }
+        
+        return apiCallPublishers.zip().map{ $0.compactMap{ $0 } }.eraseToAnyPublisher()
+        // 퍼블리셔 배열을 zip로 묶음
+    }
+    
 }

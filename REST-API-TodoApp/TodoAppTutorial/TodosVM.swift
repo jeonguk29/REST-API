@@ -212,7 +212,70 @@ class TodosVM: ObservableObject {
 //            })
 //            .store(in: &subscriptions) // 찌꺼기 처리
 
-        TodosAPI.addATodoAndFetchTodosWithPublisherNoErrorSwitchToLatest(title: "SwitchToLatest를 사용해보자 ")
+//        TodosAPI.addATodoAndFetchTodosWithPublisherNoErrorSwitchToLatest(title: "SwitchToLatest를 사용해보자 ")
+//            .sink( receiveCompletion : { [weak self] completion in
+//                guard let self = self else { return }
+//                switch completion {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .finished:
+//                    print("TodosVM - finished")
+//                }
+//            }, receiveValue: { response in
+//                print("TodosVM - response: \(response)") // 에러면 빈 배열이 들어옴
+//            })
+//            .store(in: &subscriptions) // 찌꺼기 처리
+        
+//        TodosAPI.deleteSelectedTodosWithPublisherMergeWithError(selectedTodoIds: [3036, 3035, 3031])
+//            .sink( receiveCompletion : { [weak self] completion in
+//                guard let self = self else { return }
+//                switch completion {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .finished:
+//                    print("TodosVM - finished")
+//                }
+//            }, receiveValue: { response in
+//                print("TodosVM - response: \(response)")
+//            })
+//            .store(in: &subscriptions) // 찌꺼기 처리
+        
+        /*
+         TodoAppTutorial/TodosAPI+Combine.swift deleteATodoWithPublisher(id:) 611 - deleteATodo 호출됨 / id: 3036
+         TodoAppTutorial/TodosAPI+Combine.swift deleteATodoWithPublisher(id:) 611 - deleteATodo 호출됨 / id: 3035
+         TodoAppTutorial/TodosAPI+Combine.swift deleteATodoWithPublisher(id:) 611 - deleteATodo 호출됨 / id: 3031
+         TodosVM - response: 3036
+         TodosVM - response: 3035
+         TodosVM - response: 3031
+         
+         응답도 3번, 중간에 에러나면 데이터 스트림 끊어짐
+         3개 다 존재하지 않는걸로 보내면
+         handleError : err : 데이터가 없습니다. 한번 응답받고 끝남
+         */
+        
+        
+        
+//        TodosAPI.deleteSelectedTodosWithPublisherMerge(selectedTodoIds: [5423, 3033, 5415])
+//            .sink( receiveCompletion : { [weak self] completion in
+//                guard let self = self else { return }
+//                switch completion {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .finished:
+//                    print("TodosVM - finished")
+//                }
+//            }, receiveValue: { response in
+//                print("TodosVM - response: \(response)")
+//            })
+//            .store(in: &subscriptions) // 찌꺼기 처리
+        /*
+         TodosVM - response: 3034
+         TodosVM - response: 3064
+         실제 삭제된것만 응답 받음 3031은 없는 데이터임 
+         
+         */
+        
+        TodosAPI.deleteSelectedTodosWithPublisherZip(selectedTodoIds: [5414, 5418, 5413, 3333])
             .sink( receiveCompletion : { [weak self] completion in
                 guard let self = self else { return }
                 switch completion {
@@ -222,11 +285,10 @@ class TodosVM: ObservableObject {
                     print("TodosVM - finished")
                 }
             }, receiveValue: { response in
-                print("TodosVM - response: \(response)") // 에러면 빈 배열이 들어옴
+                print("TodosVM - response: \(response)")
             })
             .store(in: &subscriptions) // 찌꺼기 처리
-        
-        
+        // TodosVM - response: [5414, 5418, 5413] Zip은 이렇게 묶어서 한번에 들어옴, 삭제된것만 들어옴 3333은 없는 데이터임
     }// init
     
     
@@ -243,13 +305,16 @@ class TodosVM: ObservableObject {
             
             switch apiError {
             case .noContent:
-                print("컨텐츠 없음") // 어떤 기능으로 처리를 해도됨 특정 뷰를 보여준다던지 등등
+                print("컨텐츠 없음")
             case .unauthorized:
                 print("인증안됨")
+            case .decodingError:
+                print("디코딩 에러입니당ㅇㅇ")
             default:
                 print("default")
             }
         }
         
     }// handleError
+    
 }

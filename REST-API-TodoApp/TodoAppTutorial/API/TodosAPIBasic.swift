@@ -8,43 +8,9 @@
 import Foundation
 import MultipartForm
 
-enum TodosAPI {
+extension TodosAPI {
     
-    static let version = "v2"
-    
-    /*
-     회사가면 디버그 서버, 릴리즈 서버 따로 있을 수 있음 + 앱스토어 배포 위해서는 릴리즈 버전으로 올라감
-     디버그, 릴리즈에 따라 baseURL 변경을 해줄 수 있음
-     */
-#if DEBUG // 디버그
-    static let baseURL = "https://phplaravel-574671-2962113.cloudwaysapps.com/api/" + version
-#else // 릴리즈
-    static let baseURL = "https://phplaravel-574671-2962113.cloudwaysapps.com/api/" + version
-#endif
-    
-    // 커스텀 에러타입 정의
-    enum ApiError : Error {
-        case noContent
-        case decodingError
-        case jsonEncoding
-        case unauthorized
-        case notAllowedUrl
-        case badStatus(code: Int)
-        case unknown(_ err: Error?)
-        
-        var info : String {
-            switch self {
-            case .noContent :           return "데이터가 없습니다."
-            case .decodingError :       return "디코딩 에러입니다."
-            case .jsonEncoding :        return "유효한 json 형식이 아닙니다."
-            case .unauthorized :        return "인증되지 않은 사용자 입니다."
-            case .notAllowedUrl :       return "올바른 URL 형식이 아닙니다."
-            case let .badStatus(code):  return "에러 상태코드 : \(code)"
-            case .unknown(let err):     return "알 수 없는 에러입니다 \n \(err)"
-            }
-        }
-    }
-    
+
     /// 모든 할 일 목록 가져오기
     /// 페이지가 아무것도 안들어오면 1페이지로 설정
     /// 비동기 처리를 위해 completion 클로저 사용 성공시 TodosResponse, 실패시 ApiError 를 반환

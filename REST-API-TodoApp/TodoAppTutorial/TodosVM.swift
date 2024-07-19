@@ -275,20 +275,28 @@ class TodosVM: ObservableObject {
          
          */
         
-        TodosAPI.deleteSelectedTodosWithPublisherZip(selectedTodoIds: [5414, 5418, 5413, 3333])
-            .sink( receiveCompletion : { [weak self] completion in
-                guard let self = self else { return }
-                switch completion {
-                case .failure(let failure) :
-                    self.handleError(failure)
-                case .finished:
-                    print("TodosVM - finished")
-                }
-            }, receiveValue: { response in
-                print("TodosVM - response: \(response)")
-            })
-            .store(in: &subscriptions) // 찌꺼기 처리
-        // TodosVM - response: [5414, 5418, 5413] Zip은 이렇게 묶어서 한번에 들어옴, 삭제된것만 들어옴 3333은 없는 데이터임
+//        TodosAPI.deleteSelectedTodosWithPublisherZip(selectedTodoIds: [5414, 5418, 5413, 3333])
+//            .sink( receiveCompletion : { [weak self] completion in
+//                guard let self = self else { return }
+//                switch completion {
+//                case .failure(let failure) :
+//                    self.handleError(failure)
+//                case .finished:
+//                    print("TodosVM - finished")
+//                }
+//            }, receiveValue: { response in
+//                print("TodosVM - response: \(response)")
+//            })
+//            .store(in: &subscriptions) // 찌꺼기 처리
+//        // TodosVM - response: [5414, 5418, 5413] Zip은 이렇게 묶어서 한번에 들어옴, 삭제된것만 들어옴 3333은 없는 데이터임
+        
+        
+        Task { // 비동기 처리 작업의 한 단위
+            let response = await TodosAPI.fetchTodosWithAsyncResult()
+            print("fetchTodosWithAsyncResult response: \(response)")
+        }
+        
+        
     }// init
     
     

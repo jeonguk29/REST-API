@@ -291,11 +291,20 @@ class TodosVM: ObservableObject {
 //        // TodosVM - response: [5414, 5418, 5413] Zip은 이렇게 묶어서 한번에 들어옴, 삭제된것만 들어옴 3333은 없는 데이터임
         
         
-        Task { // 비동기 처리 작업의 한 단위
-            let response = await TodosAPI.fetchTodosWithAsyncResult()
-            print("fetchTodosWithAsyncResult response: \(response)")
-        }
+//        Task { // 비동기 처리 작업의 한 단위
+//            let response = await TodosAPI.fetchTodosWithAsyncResult()
+//            print("fetchTodosWithAsyncResult response: \(response)")
+//        }
         
+        Task { // 비동기 처리 작업의 한 단위
+            do {
+                let response = try await TodosAPI.fetchTodosWithAsync()
+                print("fetchTodosWithAsyncResult response: \(response)")
+            } catch {
+                self.handleError(error)
+            }
+     
+        }
         
     }// init
     

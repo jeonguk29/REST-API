@@ -296,14 +296,30 @@ class TodosVM: ObservableObject {
 //            print("fetchTodosWithAsyncResult response: \(response)")
 //        }
         
-        Task { // 비동기 처리 작업의 한 단위
-            do {
-                let response = try await TodosAPI.fetchTodosWithAsync()
-                print("fetchTodosWithAsyncResult response: \(response)")
-            } catch {
-                self.handleError(error)
-            }
-     
+//        Task { // 비동기 처리 작업의 한 단위
+//            do {
+//                let response = try await TodosAPI.fetchTodosWithAsync()
+//                print("fetchTodosWithAsyncResult response: \(response)")
+//            } catch {
+//                self.handleError(error)
+//            }
+//     
+//        }
+        
+//        Task{
+//            do {
+//                let response : [Todo] = try await TodosAPI.addATodoAndFetchTodosWithAsyncWithError(title: "우기의 빡코딩")
+//                print("fetchTodosWithAsyncResult response: \(response)")
+//            } catch {
+//                self.handleError(error)
+//            }
+//        }
+//        
+        
+        Task {
+            let response : [Todo] = await TodosAPI.addATodoAndFetchTodosWithAsyncNoError(title: "우기의 빡코딩딩딩딩")
+            print("addATodoAndFetchTodosWithAsyncNoError response: \(response)")
+            // 빈 배열을 반환해서 do - catch는 필요 없음 
         }
         
     }// init

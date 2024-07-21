@@ -316,11 +316,48 @@ class TodosVM: ObservableObject {
 //        }
 //        
         
+//        Task {
+//            let response : [Todo] = await TodosAPI.addATodoAndFetchTodosWithAsyncNoError(title: "우기의 빡코딩딩딩딩")
+//            print("addATodoAndFetchTodosWithAsyncNoError response: \(response)")
+//            // 빈 배열을 반환해서 do - catch는 필요 없음 
+//        }
+        
+//        Task {
+//            let response : [Int] = await TodosAPI.deleteSelectedTodosWithAsyncNoError(selectedTodoIds: [])
+//                print("deleteSelectedTodosWithAsyncWithError \(response)")
+//            /*
+//             TodoAppTutorial/TodosAPI+Async.swift deleteATodoWithAsync(id:) 623 - deleteATodo 호출됨 / id: 5433
+//             TodoAppTutorial/TodosAPI+Async.swift deleteATodoWithAsync(id:) 623 - deleteATodo 호출됨 / id: 5411
+//             TodoAppTutorial/TodosAPI+Async.swift deleteATodoWithAsync(id:) 623 - deleteATodo 호출됨 / id: 5434
+//             */
+//        }
+        
+//        Task {
+//            do {
+//                let response : [Int] = try await TodosAPI.deleteSelectedTodosWithAsyncWithError(selectedTodoIds: [])
+//                print("deleteSelectedTodosWithAsyncWithError \(response)")
+//            } catch {
+//                self.handleError(error)
+//            }
+//        }
+        
+        
+//        Task {
+//            do {
+//                let response : [Int] = try await TodosAPI.deleteSelectedTodosWithAsyncTaskGroupWithError(selectedTodoIds: [5408, 3026, 3029])
+//                print("deleteSelectedTodosWithAsyncWithError \(response)")
+//            } catch {
+//                self.handleError(error)
+//            }
+//        } // 없는 값을 넣으면 에러를 방출함
+//        
+        
         Task {
-            let response : [Todo] = await TodosAPI.addATodoAndFetchTodosWithAsyncNoError(title: "우기의 빡코딩딩딩딩")
-            print("addATodoAndFetchTodosWithAsyncNoError response: \(response)")
-            // 빈 배열을 반환해서 do - catch는 필요 없음 
-        }
+            
+            let response : [Int] = try await TodosAPI.deleteSelectedTodosWithAsyncTaskGroupNoError(selectedTodoIds: [3030, 5428, 3029])
+            print("deleteSelectedTodosWithAsyncWithError \(response)")
+            
+        } // eleteSelectedTodosWithAsyncWithError [5428, 3030]. 삭제된 것만 출력
         
     }// init
     

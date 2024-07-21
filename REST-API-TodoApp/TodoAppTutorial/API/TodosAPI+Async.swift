@@ -750,5 +750,123 @@ extension TodosAPI {
     }
     
     
-
+    // MARK: - 동시 API 처리
+    
+    /// 클로져 기반 api 동시 처리
+    /// 선택된 할일들 삭제하기
+    /// - Parameters:
+    ///   - selectedTodoIds: 선택된 할일 아이디들
+    ///   - completion: 실제 삭제가 완료된 아이디들
+    static func deleteSelectedTodosWithAsyncNoError(selectedTodoIds: [Int]) async -> [Int]{
+        
+        // await을 사용하지 않음 동시에 출발해야함 , async을 문법 맨 앞으로 위치시켜 각자가 출발한다 명시
+        async let firstResult = self.deleteATodoWithAsync(id: 5434)
+        async let secondResult = self.deleteATodoWithAsync(id: 5433)
+        async let thirdResult = self.deleteATodoWithAsync(id: 5411)
+        
+        // 각각의 값들이 에러를 던짐 우리도 throw 던질 수 있지만  do - catch 로 받아 빈배열 처리
+        do {
+            let results : [Int?] = try await[firstResult.data?.id,
+                                             secondResult.data?.id,
+                                             thirdResult.data?.id]
+            return results.compactMap{ $0 }
+        } catch {
+            
+            if let _ = error as? URLError {
+                return []
+            }
+            
+            if let _ = error as? ApiError {
+                return []
+            }
+            return []
+        }
+    }
+    
+    /// 클로져 기반 api 동시 처리
+    /// 선택된 할일들 삭제하기
+    /// - Parameters:
+    ///   - selectedTodoIds: 선택된 할일 아이디들
+    ///   - completion: 실제 삭제가 완료된 아이디들
+    static func deleteSelectedTodosWithAsyncWithError(selectedTodoIds: [Int]) async throws -> [Int]{
+        
+        async let firstResult = self.deleteATodoWithAsync(id: 5434)
+        async let secondResult = self.deleteATodoWithAsync(id: 5433)
+        async let thirdResult = self.deleteATodoWithAsync(id: 5411)
+        
+        
+        let results : [Int?] = try await[firstResult.data?.id,
+                                         secondResult.data?.id,
+                                         thirdResult.data?.id] // try 하는 과정에서 애러가 나감
+        return results.compactMap{ $0 }
+    }
+    
+    /// Async 기반 api 동시 처리
+    /// 선택된 할일들 삭제하기
+    /// - Parameters:
+    ///   - selectedTodoIds: 선택된 할일 아이디들
+    ///   - completion: 실제 삭제가 완료된 아이디들
+    static func deleteSelectedTodosWithAsyncTaskGroupWithError(selectedTodoIds: [Int]) async throws -> [Int]{
+        
+        // Sendable.Type : 각각의 테스크들에서 반환되는 녀석 즉 addTask에서 반환되는 타입
+        try await withThrowingTaskGroup(of: Int?.self) { (group : inout ThrowingTaskGroup<Int?, Error>) -> [Int] in
+            
+            // 각각 자식 async 태스크를 그룹에 넣기
+            for aTodoId in selectedTodoIds {
+                group.addTask(operation: {
+                    // 단일 api 쏘기
+                    let childTaskResult = try await self.deleteATodoWithAsync(id: aTodoId)
+                    return childTaskResult.data?.id
+                    // 이 값이 of: Int?.self, ThrowingTaskGroup<Int?, Error> 이것과 같음
+                })
+            }
+            
+            var deleteTodoIds : [Int] = [] // 언래핑한 최종 결과값 담기 위한 배열
+            
+            for try await singleValue in group { // 반복하여 결과 받기 
+                if let value = singleValue {
+                    deleteTodoIds.append(value)
+                }
+            }
+            
+            return deleteTodoIds
+        }
+    }
+    
+    
+    /// Async 기반 api 동시 처리
+    /// 선택된 할일들 삭제하기
+    /// - Parameters:
+    ///   - selectedTodoIds: 선택된 할일 아이디들
+    ///   - completion: 실제 삭제가 완료된 아이디들
+    static func deleteSelectedTodosWithAsyncTaskGroupNoError(selectedTodoIds: [Int]) async -> [Int]{
+        
+        // 에러를 던지지 않는 TaskGroup,   TaskGroup<Int?>에도 에러없음
+        await withTaskGroup(of: Int?.self) { (group : inout TaskGroup<Int?>) -> [Int] in
+            
+            // 각각 자식 async 태스크를 그룹에 넣기
+            for aTodoId in selectedTodoIds {
+                group.addTask(operation: {
+                    do {
+                        // 단일 api 쏘기
+                        let childTaskResult = try await self.deleteATodoWithAsync(id: aTodoId)
+                        return childTaskResult.data?.id
+                    } catch {
+                        return nil
+                    }
+                })
+            }
+            
+            var deleteTodoIds : [Int] = []
+            
+            for await singleValue in group {
+                if let value = singleValue {
+                    deleteTodoIds.append(value)
+                }
+            }
+            return deleteTodoIds
+        }
+    }
+    
+    
 }

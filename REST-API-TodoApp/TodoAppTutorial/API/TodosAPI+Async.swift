@@ -868,5 +868,67 @@ extension TodosAPI {
         }
     }
     
+    /// Async 기반 api 동시 처리
+    /// 선택된 할일들 가져오기
+    /// - Parameters:
+    ///   - selectedTodoIds: 선택된 할일 아이디들
+    ///   - completion: 응답 결과
+    static func fetchSelectedTodosAsyncNoError(selectedTodoIds: [Int]) async -> [Todo]{
+        
+        
+        await withTaskGroup(of: Todo?.self) { (group : inout TaskGroup<Todo?>) -> [Todo] in // [Todo] 최종적으로는 이걸로 나감
+            
+            // 각각 자식 async 태스크를 그룹에 넣기
+            for aTodoId in selectedTodoIds {
+                group.addTask(operation: {
+                    do {
+                        // 단일 api 쏘기
+                        let childTaskResult = try await self.fetchATodoWithAsync(id: aTodoId)
+                        return childTaskResult.data
+                    } catch {
+                        return nil
+                    }
+                })
+            }
+            
+            var fetchedTodos : [Todo] = []
+            
+            for await singleValue in group {
+                if let value = singleValue {
+                    fetchedTodos.append(value) // Todo
+                }
+            }
+            return fetchedTodos
+        }
+    }
+    
+    /// Async 기반 api 동시 처리
+    /// 선택된 할일들 가져오기
+    /// - Parameters:
+    ///   - selectedTodoIds: 선택된 할일 아이디들
+    ///   - completion: 응답 결과
+    static func fetchSelectedTodosAsyncWithError(selectedTodoIds: [Int]) async throws -> [Todo]{
+        
+        // 해당 그룹에서도 에러를 방출 할 수가 있어서 try 붙임
+        try await withThrowingTaskGroup(of: Todo?.self, body: { (group: inout ThrowingTaskGroup<Todo?, Error>) in
+            
+            for aTodoId in selectedTodoIds {
+                group.addTask(operation: {
+                    let childTaskResult = try await self.fetchATodoWithAsync(id: aTodoId)
+                    return childTaskResult.data
+                })
+            }
+            
+            var fetchedTodos : [Todo] = []
+            
+            for try await singleValue in group { // 실제 발동되는 부분 
+                if let value = singleValue {
+                    fetchedTodos.append(value) // Todo
+                }
+            }
+            return fetchedTodos
+        })
+    }
+    
     
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		642D9EA62C4E7DB100B31B51 /* ClosureToAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642D9EA52C4E7DB100B31B51 /* ClosureToAsync.swift */; };
 		6491B0A52C44FE3500C2D825 /* URL+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6491B0A32C44FE3500C2D825 /* URL+Ext.swift */; };
 		6491B0A82C45051F00C2D825 /* MultipartForm in Frameworks */ = {isa = PBXBuildFile; productRef = 6491B0A72C45051F00C2D825 /* MultipartForm */; };
 		6491B0AA2C451D2300C2D825 /* URLRequest+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6491B0A92C451D2300C2D825 /* URLRequest+Ext.swift */; };
@@ -34,6 +35,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		642D9EA52C4E7DB100B31B51 /* ClosureToAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureToAsync.swift; sourceTree = "<group>"; };
 		6491B0A32C44FE3500C2D825 /* URL+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Ext.swift"; sourceTree = "<group>"; };
 		6491B0A92C451D2300C2D825 /* URLRequest+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Ext.swift"; sourceTree = "<group>"; };
 		6496CB242C42B81700381F0F /* TodosAPIBasic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosAPIBasic.swift; sourceTree = "<group>"; };
@@ -89,6 +91,7 @@
 				6496CB242C42B81700381F0F /* TodosAPIBasic.swift */,
 				64ACDAF32C47B42800A4C169 /* TodosAPI+Combine.swift */,
 				64E165512C4A624F00E98284 /* TodosAPI+Async.swift */,
+				642D9EA52C4E7DB100B31B51 /* ClosureToAsync.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				64ACDAF02C478E0700A4C169 /* TodosAPI+Closure.swift in Sources */,
 				6496CB282C42BC6400381F0F /* TodosVM.swift in Sources */,
 				F2A438F7291D351C006402B0 /* Button+Style.swift in Sources */,
+				642D9EA62C4E7DB100B31B51 /* ClosureToAsync.swift in Sources */,
 				6491B0A52C44FE3500C2D825 /* URL+Ext.swift in Sources */,
 				F2C9BF67291BE21B003BC36C /* TodoAppTutorialApp.swift in Sources */,
 				F2A438FA291D391C006402B0 /* UISearchBarWrapper.swift in Sources */,

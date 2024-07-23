@@ -413,18 +413,38 @@ class TodosVM: ObservableObject {
 //            }
 //            .store(in: &subscriptions)
         
-        TodosAPI.fetchTodosClosureToPublisherNoError(page: 1)
-            .sink { completion in
-                switch completion {
-                case .failure(let _):
-                    print("failure: ") // 에러 어차피 안들어옴
-                case .finished:
-                    print("finished")
-                }
-            } receiveValue: { response in
-                print("response \(response)")
+//        TodosAPI.fetchTodosClosureToPublisherNoError(page: 1)
+//            .sink { completion in
+//                switch completion {
+//                case .failure(let _):
+//                    print("failure: ") // 에러 어차피 안들어옴
+//                case .finished:
+//                    print("finished")
+//                }
+//            } receiveValue: { response in
+//                print("response \(response)")
+//            }
+//            .store(in: &subscriptions)
+        
+        
+        // 컴바인 퍼블리셔 이벤트를 구독을 하고 Async이벤트 던지는 것을 받아 처리 
+//        Task {
+//            do {
+//                let result = try await TodosAPI.fetchTodosWithPublisherToAsync(page: 1)
+//                print("result : \(result)")
+//            } catch {
+//                print("catch error : \(error)")
+//            }
+//        }
+        
+        Task {
+            do {
+                let result = try await TodosAPI.fetchTodosWithPublisher(page: 1).toAsync()// 확장으로 구현해서 이렇게만 구현하면 위랑 같음
+                print("result : \(result)")
+            } catch {
+                print("catch error : \(error)")
             }
-            .store(in: &subscriptions)
+        }
     }
     
     /// API 에러처리

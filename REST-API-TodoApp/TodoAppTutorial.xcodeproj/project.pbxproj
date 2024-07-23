@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		642D9EA62C4E7DB100B31B51 /* ClosureToAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 642D9EA52C4E7DB100B31B51 /* ClosureToAsync.swift */; };
 		64322CA52C4E950F006FC0B5 /* ClosureToCombine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64322CA42C4E950F006FC0B5 /* ClosureToCombine.swift */; };
+		6443ACF62C4FD109006800D3 /* CombineToAsync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6443ACF52C4FD109006800D3 /* CombineToAsync.swift */; };
 		6491B0A52C44FE3500C2D825 /* URL+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6491B0A32C44FE3500C2D825 /* URL+Ext.swift */; };
 		6491B0A82C45051F00C2D825 /* MultipartForm in Frameworks */ = {isa = PBXBuildFile; productRef = 6491B0A72C45051F00C2D825 /* MultipartForm */; };
 		6491B0AA2C451D2300C2D825 /* URLRequest+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6491B0A92C451D2300C2D825 /* URLRequest+Ext.swift */; };
@@ -38,6 +39,7 @@
 /* Begin PBXFileReference section */
 		642D9EA52C4E7DB100B31B51 /* ClosureToAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureToAsync.swift; sourceTree = "<group>"; };
 		64322CA42C4E950F006FC0B5 /* ClosureToCombine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosureToCombine.swift; sourceTree = "<group>"; };
+		6443ACF52C4FD109006800D3 /* CombineToAsync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombineToAsync.swift; sourceTree = "<group>"; };
 		6491B0A32C44FE3500C2D825 /* URL+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Ext.swift"; sourceTree = "<group>"; };
 		6491B0A92C451D2300C2D825 /* URLRequest+Ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URLRequest+Ext.swift"; sourceTree = "<group>"; };
 		6496CB242C42B81700381F0F /* TodosAPIBasic.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TodosAPIBasic.swift; sourceTree = "<group>"; };
@@ -95,6 +97,7 @@
 				64E165512C4A624F00E98284 /* TodosAPI+Async.swift */,
 				642D9EA52C4E7DB100B31B51 /* ClosureToAsync.swift */,
 				64322CA42C4E950F006FC0B5 /* ClosureToCombine.swift */,
+				6443ACF52C4FD109006800D3 /* CombineToAsync.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				642D9EA62C4E7DB100B31B51 /* ClosureToAsync.swift in Sources */,
 				6491B0A52C44FE3500C2D825 /* URL+Ext.swift in Sources */,
 				F2C9BF67291BE21B003BC36C /* TodoAppTutorialApp.swift in Sources */,
+				6443ACF62C4FD109006800D3 /* CombineToAsync.swift in Sources */,
 				F2A438FA291D391C006402B0 /* UISearchBarWrapper.swift in Sources */,
 				64E1654D2C4A4ADE00E98284 /* TodosAPI.swift in Sources */,
 				64E165522C4A625000E98284 /* TodosAPI+Async.swift in Sources */,

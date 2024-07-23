@@ -382,11 +382,49 @@ class TodosVM: ObservableObject {
 //            }
 //        }
         
-        Task {
-            let result = await TodosAPI.fetchTodosClosureToAsyncReturnArray(page: 1)
-            print("result: \(result)")
-        }
+//        Task {
+//            let result = await TodosAPI.fetchTodosClosureToAsyncReturnArray(page: 1)
+//            print("result: \(result)")
+//        }
+//        
+//        TodosAPI.fetchTodosClosureToPublisher(page: 1)
+//            .sink { completion in
+//                switch completion {
+//                case .failure(let failure):
+//                    print("failure: \(failure)")
+//                case .finished:
+//                    print("finished")
+//                }
+//            } receiveValue: { response in
+//                print("response \(response)")
+//            }
+//            .store(in: &subscriptions)
+       
+//        TodosAPI.fetchTodosClosureToPublisherMapError(page: 1)
+//            .sink { completion in
+//                switch completion {
+//                case .failure(let failure):
+//                    print("failure: \(failure)")
+//                case .finished:
+//                    print("finished")
+//                }
+//            } receiveValue: { response in
+//                print("response \(response)")
+//            }
+//            .store(in: &subscriptions)
         
+        TodosAPI.fetchTodosClosureToPublisherNoError(page: 1)
+            .sink { completion in
+                switch completion {
+                case .failure(let _):
+                    print("failure: ") // 에러 어차피 안들어옴
+                case .finished:
+                    print("finished")
+                }
+            } receiveValue: { response in
+                print("response \(response)")
+            }
+            .store(in: &subscriptions)
     }
     
     /// API 에러처리

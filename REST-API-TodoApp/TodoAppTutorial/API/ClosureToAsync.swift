@@ -96,7 +96,7 @@ extension TodosAPI {
                 case .success(let success):
                     continuation.resume(returning: success) // 성공은 실제 값이라 returning로 던지기
                 case .failure(let failure):
-                    continuation.resume(throwing: failure) // 에러 타입은 throwing로 던지기 
+                    continuation.resume(throwing: failure) // 에러 타입은 throwing로 던지기
                 }
             })
         })

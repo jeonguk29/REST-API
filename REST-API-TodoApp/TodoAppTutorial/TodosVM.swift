@@ -437,14 +437,40 @@ class TodosVM: ObservableObject {
 //            }
 //        }
         
-        Task {
-            do {
-                let result = try await TodosAPI.fetchTodosWithPublisher(page: 1).toAsync()// 확장으로 구현해서 이렇게만 구현하면 위랑 같음
-                print("result : \(result)")
-            } catch {
-                print("catch error : \(error)")
+//        TodosAPI.fetchTodosAsyncToPublisher(page: 1)
+//            .sink { completion in
+//                switch completion {
+//                case .finished:
+//                    print("finished")
+//                case .failure(let failure):
+//                    print("failed: \(failure)")
+//                }
+//            } receiveValue: { response in
+//                print("response: \(response)")
+//            }.store(in: &subscriptions)
+//        
+//        
+//        // Async로 반환이 된다면 저절로 Future를 통해서 퍼블리셔로 변경되는애를 만든것임 
+//        TodosAPI.genericAsyncToPublisher(asyncWork: {
+//            try await TodosAPI.fetchTodosWithAsync(page: 1)
+//        })
+        
+        Just(1)
+            .mapAsync { value in
+                try await TodosAPI.fetchTodosWithAsync(page: value)
             }
-        }
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("finished")
+                case .failure(let failure):
+                    print("failed: \(failure)")
+                }
+            } receiveValue: { response in
+                print("response: \(response)")
+            }.store(in: &subscriptions)
+        
+
     }
     
     /// API 에러처리

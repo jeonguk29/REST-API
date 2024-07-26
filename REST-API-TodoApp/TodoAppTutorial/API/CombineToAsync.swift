@@ -70,3 +70,29 @@ extension AnyPublisher {
     }
 }
 
+//MARK: - Combine Retry
+extension Publisher {
+    
+    
+    func retryWithDelayAndCondition<T, E>(retryCount: Int = 1,
+                                    delay: Int = 1,
+                                    when: ((Error) -> Bool)? = nil
+    ) -> Publishers.TryCatch<Self, AnyPublisher<T, E>> where T == Self.Output, E == Self.Failure {
+        return self.tryCatch({ err -> AnyPublisher<T, E> in
+                
+            // 조건
+            guard (when?(err) ?? true) else {
+                throw err
+            }
+                
+            return Just(Void())
+                .delay(for: .seconds(delay), scheduler: DispatchQueue.main) // 딜레이
+                .flatMap { _ in
+                    return self
+                }
+                .retry(retryCount - 1)
+                .eraseToAnyPublisher()
+            })
+    }
+    
+}

@@ -152,6 +152,7 @@ extension TodosAPI {
                 
                 return ApiError.unknown(nil) // 이렇게 로직짜는게 좋음 위 거름망 통과후 나머지 처리
             })
+            .print("Combine 리트라이")
             .eraseToAnyPublisher()
     }
     
@@ -216,7 +217,8 @@ extension TodosAPI {
                 }
                 
                 return ApiError.unknown(nil)
-            }).eraseToAnyPublisher()
+            })
+            .eraseToAnyPublisher()
         
     }
     

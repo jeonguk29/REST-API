@@ -455,21 +455,76 @@ class TodosVM: ObservableObject {
 //            try await TodosAPI.fetchTodosWithAsync(page: 1)
 //        })
         
-        Just(1)
-            .mapAsync { value in
-                try await TodosAPI.fetchTodosWithAsync(page: value)
-            }
+        var requestCount : Int = 0
+        var retryCount : Int = 3
+        
+        
+        // retry 이해
+        TodosAPI.fetchTodosWithPublisher(page: 999)
+            .print("Combine 리트라이") //해당 주석 풀면 3번 호출 됨
+            .delay(for: 3, scheduler: DispatchQueue.main) // 3초마다 한번씩 요청 (딜레이 설정 )
+            .retry(3)// 3번 재요청 (에러가 날때 ) 해당 라인 위로 업스트림임
             .sink { completion in
                 switch completion {
+                case .failure(let failure) :
+                    print("failure : \(failure)")
                 case .finished:
                     print("finished")
-                case .failure(let failure):
-                    print("failed: \(failure)")
                 }
+                
             } receiveValue: { response in
-                print("response: \(response)")
+                print("response : \(response)")
             }.store(in: &subscriptions)
         
+            
+        // 조건에 따라 리트라이 시도
+        TodosAPI.fetchTodosWithPublisher(page: 999)
+            .tryCatch({ err in
+
+                if case TodosAPI.ApiError.noContent = err {
+                    throw err
+                }
+                return Just(Void()) // 에러면 그냥 빈 물줄기 하나 내보내기
+                    .delay(for: 3, scheduler: DispatchQueue.main)
+                    .flatMap { _ in
+                        return TodosAPI.fetchTodosWithPublisher(page: 999) // 이 행위 자체가 retry가 되는 것임
+                    }
+                    .retry(retryCount)
+                    .eraseToAnyPublisher()
+            })
+            .sink { completion in
+                switch completion {
+                case .failure(let failure) :
+                    print("failure : \(failure)")
+                case .finished:
+                    print("finished")
+                }
+                
+            } receiveValue: { response in
+                print("response : \(response)")
+            }.store(in: &subscriptions)
+        
+        // 조건에 따라 리트라이 시도 확장을 통해 사용
+        TodosAPI.fetchTodosWithPublisher(page: 999) // extention으로 구현한걸 이용
+            .retryWithDelayAndCondition(retryCount: 3, delay: 2, when: { err in
+                if case TodosAPI.ApiError.noContent = err {
+                    return true
+                }
+                return false
+            })
+            .sink { completion in
+                switch completion {
+                case .failure(let failure) :
+                    print("failure : \(failure)")
+                case .finished:
+                    print("finished")
+                }
+                
+            } receiveValue: { response in
+                print("response : \(response)")
+            }.store(in: &subscriptions)
+
+
 
     }
     

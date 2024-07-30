@@ -77,11 +77,12 @@ extension Publisher {
     func retryWithDelayAndCondition<T, E>(retryCount: Int = 1,
                                     delay: Int = 1,
                                     when: ((Error) -> Bool)? = nil
+                                          //  when: ((Error) -> Bool)? 어떤 에러가 들어오는지 따라 리트라이 할건지 말건지 판별
     ) -> Publishers.TryCatch<Self, AnyPublisher<T, E>> where T == Self.Output, E == Self.Failure {
-        return self.tryCatch({ err -> AnyPublisher<T, E> in
+        return self.tryCatch({ err -> AnyPublisher<T, E> in //self는 데이터 스트림 자체임
                 
             // 조건
-            guard (when?(err) ?? true) else {
+            guard (when?(err) ?? true) else { // when이라는 클로저를 터트렸을때 true 이라면 아래 블럭으로 내려가서 리트라이를 시도 
                 throw err
             }
                 

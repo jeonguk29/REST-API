@@ -133,6 +133,10 @@ extension TodosAPI {
             return listResponse
             
         } catch {
+            
+            if let myApiErr = error as? ApiError {
+                throw myApiErr
+            }
             // 이렇게 그물망 처리 하는게 좋음
             if let apiError = error as? URLError {
                 throw ApiError.badStatus(code: apiError.errorCode)
@@ -931,4 +935,51 @@ extension TodosAPI {
     }
     
     
+}
+
+
+//MARK: - Acync Retry
+// Task 블럭 안에서 하는거라 Task를 확장으로 구현하는 것임
+
+extension Task where Failure == Error { // Failure 타입이 에러인 경우에 아래 확장 문법을 적용
+    
+    enum TaskRetryError : Error {
+        case maxRetryRequest
+    }
+    
+    // static 메서드로 만들기 Task.retry 이런식으로 사용하려고 (인스턴스를 만들지 않아도 접근 할 수 있는 메서드를 만들기 위해)
+    static func retry(retryCount: Int = 1,
+                      delay: Int = 1,
+                      when: ((Error) -> Bool)? = nil,
+                      asyncWork: @Sendable @escaping () async throws -> Success
+                      // @Sendable 동시성에서 값이 안전하게 전달 될 수 있도록 도와줌
+    ) -> Task {
+        
+        // 횟수, 딜레이, 조건
+        return Task {
+            for _ in 0...retryCount {
+                do {
+                    
+                    // 성공시 리턴
+                    let result = try await asyncWork()
+                    print("retry - result: \(result)")
+                    return result // 성공을 반환
+                    
+                } catch {
+                    print("retry - error: \(error)")
+                    
+                    // 특정 조건일 때
+                    guard (when?(error) ?? true) else { // 클로저가 안들어오면 true
+                        throw error
+                    }
+                    
+                    // 딜레이
+                    try await Task<Never, Never>.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
+                    // 위로
+                    continue
+                }
+            }
+            throw TaskRetryError.maxRetryRequest // 리트라이 다 돌리면 커스텀 에러를 반환
+        }// Task
+    }
 }

@@ -26,14 +26,21 @@ class TodosVM {
         }
     }
     
-    var isLoading : Bool = false
-    
+    var isLoading : Bool = false {
+        didSet {
+            print(#fileID, #function, #line, "- ")
+            notifyLoadingStateChanged?(isLoading)
+        }
+    }
     
     // 데이터 변경 이벤트 - 클로저로 이벤트를 전달해주는 것임 변경되었다고
     var notifyTodosChanged : (([Todo]) -> Void)? = nil
     
     // 현재페이지 변경 이벤트
     var notifyCurrentPageChanged : ((Int) -> Void)? = nil
+    
+    // 로딩중 여부 변경 이벤트
+    var notifyLoadingStateChanged : ((_ isLoading: Bool) -> Void)? = nil
     
     init(){
         print(#fileID, #function, #line, "- ")
@@ -62,6 +69,7 @@ class TodosVM {
             print("로딩중입니다...")
             return
         }
+        isLoading = true
         
         // 페이징 처리 한번 될때마다 딜레이 주기 없으면 바로바로 호출이 되는 것
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {

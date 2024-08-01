@@ -42,6 +42,9 @@ class TodosVM {
     // 로딩중 여부 변경 이벤트
     var notifyLoadingStateChanged : ((_ isLoading: Bool) -> Void)? = nil
     
+    // 리프레시 완료 이벤트
+    var notifyRefreshEnded : (() -> Void)? = nil
+    
     init(){
         print(#fileID, #function, #line, "- ")
         
@@ -94,7 +97,7 @@ class TodosVM {
                     print("failure: \(failure)")
                     
                 }
-                
+                self.notifyRefreshEnded?() // 만약 새로고침으로 해당 메서드를 호출했다면 끝났다고 알림
                 self.isLoading = false
                 
             })
@@ -102,6 +105,12 @@ class TodosVM {
         })
       
         
+    }
+    
+    /// 데이터 리프레시
+    func fetchRefresh(){
+        print(#fileID, #function, #line, "- ")
+        self.fetchTodos(page: 1)
     }
     
     

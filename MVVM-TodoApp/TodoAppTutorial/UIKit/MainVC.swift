@@ -30,6 +30,17 @@ class MainVC: UIViewController{
         return indicator
     }() // 클로저를 만들고 바로 호출해서 bottomIndicator안에 넣어준것
     
+    // 새로고침을 위한 refreshControl
+    lazy var refreshControl : UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        //        refreshControl.transform = CGAffineTransform(scaleX: 0.7, y: 0.7) // 크기 변경
+        refreshControl.tintColor = .systemBlue.withAlphaComponent(0.5)
+        //        refreshControl.attributedTitle = NSAttributedString(string: "당겨서 새로고침") // 표시할 문자열
+        refreshControl.addTarget(self, action: #selector(self.handleRefresh(_:)), for: .valueChanged)
+        return refreshControl
+    }()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print(#fileID, #function, #line, "- ")
@@ -39,6 +50,7 @@ class MainVC: UIViewController{
         self.myTableView.register(TodoCell.uinib, forCellReuseIdentifier: TodoCell.reuseIdentifier)
         self.myTableView.dataSource = self
         self.myTableView.delegate = self
+        self.myTableView.refreshControl = refreshControl
         self.myTableView.tableFooterView = bottomIndicator
         
         // MARK: - 뷰모델 설정 부분
@@ -71,9 +83,30 @@ class MainVC: UIViewController{
             }
         }
         
+        // 당겨서 새로고침 완료
+        // 💁 2.뷰모델한테 시키고난 다음 이벤트 받고 처리
+        self.todosVM.notifyRefreshEnded = { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.refreshControl.endRefreshing()
+            }
+        }
+        
     }
 }
 
+//MARK: - 액션들
+extension MainVC {
+    /// 리프레시 처리
+    /// - Parameter sender:
+    @objc fileprivate func handleRefresh(_ sender: UIRefreshControl) {
+        print(#fileID, #function, #line, "- ")
+        
+        // 💁 1.뷰모델한테 시키기
+        self.todosVM.fetchRefresh()
+    }
+    
+}
 // 1. 갯수
 // 2. 어떤 셀 보여줄지 정함
 extension MainVC : UITableViewDataSource {

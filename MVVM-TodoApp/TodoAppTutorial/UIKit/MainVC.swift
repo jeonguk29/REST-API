@@ -14,6 +14,8 @@ class MainVC: UIViewController{
     
     @IBOutlet weak var myTableView: UITableView!
     
+    @IBOutlet var pageInfoLabel: UILabel!
+    
     var todos : [Todo] = []
     
     var todosVM: TodosVM = TodosVM()
@@ -23,8 +25,13 @@ class MainVC: UIViewController{
         print(#fileID, #function, #line, "- ")
         self.view.backgroundColor = .systemYellow
         
+        // 테이블뷰 설정
         self.myTableView.register(TodoCell.uinib, forCellReuseIdentifier: TodoCell.reuseIdentifier)
         self.myTableView.dataSource = self
+        self.myTableView.delegate = self
+        
+        
+        // MARK: - 뷰모델 설정 부분
         
         // 뷰모델 이벤트 받기 - 뷰 - 뷰모델 바인딩 - 묶기
         // 사실상 뷰모델에 클로저의 타입을 정의하고 값을 여기서 정의하여 함수를 실행하는 것
@@ -34,6 +41,14 @@ class MainVC: UIViewController{
                 self.myTableView.reloadData()
             }
         }
+        
+        // 페이지 변경
+        self.todosVM.notifyCurrentPageChanged = { currentPage in
+            DispatchQueue.main.async {
+                self.pageInfoLabel.text = "페이지 : \(currentPage)"
+            }
+        }
+        
     }
 }
 
@@ -90,10 +105,9 @@ extension MainVC : UITableViewDelegate {
         let height = scrollView.frame.size.height
         let contentYOffset = scrollView.contentOffset.y
         let distanceFromBottom = scrollView.contentSize.height - contentYOffset // 바닥이랑 얼마정도 떨어져있는지 간격을 나타냄
-
         if distanceFromBottom - 200 < height {
             print("바닥이다")
-
+            self.todosVM.fetchMore()
         }
     }
     

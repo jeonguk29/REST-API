@@ -14,8 +14,7 @@ class MainVC: UIViewController{
     
     @IBOutlet weak var myTableView: UITableView!
     
-    var dummyDataList = ["aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa", "aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa", "aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa", "aaksjsfd", "asdfas", "asdfasdf", "sdfsdfa"]
-    
+    var todos : [Todo] = []
     
     var todosVM: TodosVM = TodosVM()
     
@@ -26,13 +25,24 @@ class MainVC: UIViewController{
         
         self.myTableView.register(TodoCell.uinib, forCellReuseIdentifier: TodoCell.reuseIdentifier)
         self.myTableView.dataSource = self
+        
+        // 뷰모델 이벤트 받기 - 뷰 - 뷰모델 바인딩 - 묶기
+        // 사실상 뷰모델에 클로저의 타입을 정의하고 값을 여기서 정의하여 함수를 실행하는 것
+        self.todosVM.notifyTodosChanged = { updatedTodos in
+            self.todos = updatedTodos
+            DispatchQueue.main.async {
+                self.myTableView.reloadData()
+            }
+        }
     }
 }
 
+// 1. 갯수
+// 2. 어떤 셀 보여줄지 정함
 extension MainVC : UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dummyDataList.count
+        return todos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -41,35 +51,51 @@ extension MainVC : UITableViewDataSource {
             return UITableViewCell()
         }
         
+        let cellData = self.todos[indexPath.row]
+        
+        // 데이터 썔에 넣어주기
+        cell.updateUI(cellData)
+        
         return cell
         
     }
 }
 
-// 3️⃣ UIViewController를 스유에서 활용가능하게 익스텐션 만들기
 extension MainVC {
     
-    // VCRepresentable는 스유뷰 자체를 말함
     private struct VCRepresentable : UIViewControllerRepresentable {
         
-        // 스유뷰로 만들 뷰컨을 정의
         let mainVC : MainVC
         
-        // 스유에서는 값이 바뀌면 뷰를 업데이트함
         func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
         }
         
-        // 해당 뷰컨을 감쌓은 스유뷰 반환
         func makeUIViewController(context: Context) -> some UIViewController {
             return mainVC
         }
     }
     
-    //뷰컨 자기 자신을 넣어 스유뷰를 반환하는 메서드
     func getRepresentable() -> some View {
         VCRepresentable(mainVC: self)
     }
 }
 
+// 테이블 뷰의 이벤트를 위임받아 처리 하는 부분
+extension MainVC : UITableViewDelegate {
+    
+    // 스크롤바 바닥 감지
+    /// - Parameter scrollView:
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//        print(#fileID, #function, #line, "- ")
+        let height = scrollView.frame.size.height
+        let contentYOffset = scrollView.contentOffset.y
+        let distanceFromBottom = scrollView.contentSize.height - contentYOffset // 바닥이랑 얼마정도 떨어져있는지 간격을 나타냄
 
+        if distanceFromBottom - 200 < height {
+            print("바닥이다")
 
+        }
+    }
+    
+    
+}

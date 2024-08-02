@@ -20,6 +20,7 @@ class MainVC: UIViewController{
     
     var todosVM: TodosVM = TodosVM()
     
+    @IBOutlet var searchBar: UISearchBar!
     
     // 바텀 인디케이터뷰 : lazy 즉 사용할때 메모리에 올림
     lazy var bottomIndicator : UIActivityIndicatorView = {
@@ -41,6 +42,8 @@ class MainVC: UIViewController{
     }()
     
     
+    var searchTermInputWorkItem : DispatchWorkItem? = nil
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         print(#fileID, #function, #line, "- ")
@@ -52,6 +55,12 @@ class MainVC: UIViewController{
         self.myTableView.delegate = self
         self.myTableView.refreshControl = refreshControl
         self.myTableView.tableFooterView = bottomIndicator
+        
+        // ===
+        // 서치바 설정
+        self.searchBar.searchTextField.addTarget(self, action: #selector(searchTermChanged(_:)), for: .editingChanged)
+        // .editingChanged 글자 입력이 되었을때 실행될 이벤트 처리 Enum이라 다양한 값이 있음
+        // ===
         
         // MARK: - 뷰모델 설정 부분
         
@@ -104,6 +113,35 @@ extension MainVC {
         
         // 💁 1.뷰모델한테 시키기
         self.todosVM.fetchRefresh()
+    }
+    
+    /// 검색어가 입력되었다
+    /// - Parameter sender:
+    @objc fileprivate func searchTermChanged(_ sender: UITextField){
+        print(#fileID, #function, #line, "- sender: \(String(describing: sender.text))")
+        
+        // - DispatchWorkItem는 특정 작업 블록을 나타내는 객체로, 이 작업을 큐에 제출하여 실행할 수 있습니다.
+        // 검색어가 입력되면 기존 작업 취소
+        searchTermInputWorkItem?.cancel()
+        
+        // 작업 하나를 생성
+        let dispatchWorkItem = DispatchWorkItem(block: {
+            // 백그라운드 - 사용자 입력 userInteractive (스레드를 바꿔줌 사용자가 입력할때)
+            DispatchQueue.global(qos: .userInteractive).async {
+                DispatchQueue.main.async { [weak self] in
+                    guard let userInput = sender.text,
+                          let self = self else { return }
+                    
+                    print(#fileID, #function, #line, "- 검색 API 호출하기 userInput: \(userInput)")
+                }
+            }
+        })
+        
+        // 기존작업을 나중에 취소하기 위해(또 글자를 입력한다면) 메모리 주소 일치 시켜줌
+        self.searchTermInputWorkItem = dispatchWorkItem
+        
+        // ⭐️ 글자를 입력할때마다 땡기는건 너무 비효율적이라 글자 입력후 일정 시간이 흐른다음 땡겨오게 만든 것임(만든 작업을 실행)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: dispatchWorkItem)
     }
     
 }

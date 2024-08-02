@@ -33,6 +33,18 @@ class TodosVM {
         }
     }
     
+    /// 검색어
+    var searchTerm: String = "" {
+        didSet {
+            print(#fileID, #function, #line, "- searchTerm: \(searchTerm)")
+            if searchTerm.count > 0 {
+                self.searchTodos(searchTerm: searchTerm)
+            } else {
+                self.fetchTodos()
+            }
+        }
+    }
+    
     // 데이터 변경 이벤트 - 클로저로 이벤트를 전달해주는 것임 변경되었다고
     var notifyTodosChanged : (([Todo]) -> Void)? = nil
     
@@ -52,6 +64,56 @@ class TodosVM {
 
     }
     
+    
+    /// 할일 검색하기
+    /// - Parameters:
+    ///   - searchTerm: 검색어
+    ///   - page: 페이지
+    func searchTodos(searchTerm: String, page: Int = 1){
+        print(#fileID, #function, #line, "- <#comment#>")
+        
+        if searchTerm.count < 1 {
+            print("검색어가 없습니다")
+            return
+        }
+        
+        if isLoading {
+            print("로딩중입니다...")
+            return
+        }
+        
+        self.todos = [] // 검색시 일단 가지고 있는 todo 비우고 추가해야 바로 결과를 볼 수 있음
+        
+        isLoading = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.7, execute: {
+            // 서비스 로직
+            TodosAPI.searchTodos(searchTerm: searchTerm,
+                                 page: page,
+                                 completion: { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let response):
+                    self.isLoading = false
+                    // 페이지 갱신
+                    if let fetchedTodos : [Todo] = response.data,
+                       let pageInfo : Meta = response.meta{
+                        if page == 1 {
+                            self.todos = fetchedTodos
+                        } else {
+                            self.todos.append(contentsOf: fetchedTodos)
+                        }
+                     
+                    }
+                case .failure(let failure):
+                    print("failure: \(failure)")
+                    self.isLoading = false
+                    self.handleError(failure)
+                }
+
+            })
+        })
+    }
     
     /// 더 가져오기
     func fetchMore(){

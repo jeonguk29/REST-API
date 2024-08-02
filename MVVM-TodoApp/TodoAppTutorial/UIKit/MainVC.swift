@@ -133,6 +133,10 @@ extension MainVC {
                           let self = self else { return }
                     
                     print(#fileID, #function, #line, "- 검색 API 호출하기 userInput: \(userInput)")
+                    #warning("TODO : - 검색 API 호출하기")
+                    
+                    // 뷰모델 검색어 갱신
+                    self.todosVM.searchTerm = userInput
                 }
             }
         })

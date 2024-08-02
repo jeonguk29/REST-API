@@ -18,13 +18,6 @@ class TodosVM {
         }
     }
     
-    // MARK: - step3
-    var currentPage: Int = 1 {
-        didSet {
-            print(#fileID, #function, #line, "- ") // API 성공시 페이지가 바뀜
-            self.notifyCurrentPageChanged?(currentPage)
-        }
-    }
     
     var isLoading : Bool = false {
         didSet {
@@ -45,6 +38,30 @@ class TodosVM {
         }
     }
     
+    // pageInfo를 통해 값을 가져옴 currentPage를 부르기만 하면 아래 로직이 실행됨
+    var currentPage: Int {
+        get {
+            if let pageInfo = self.pageInfo,
+               let currentPage = pageInfo.currentPage {
+                return currentPage
+            } else {
+                return 1 // pageInfo 값이 없다면
+            }
+        }
+    }
+    
+    var pageInfo : Meta? = nil {
+        didSet {
+            print(#fileID, #function, #line, "- pageInfo: \(pageInfo)")
+            
+            // 다음페이지 있는지 여부 이벤트
+            self.notifyHasNextPage?(pageInfo?.hasNext() ?? true)
+            
+            // 현재 페이지 변경 이벤트
+            self.notifyCurrentPageChanged?(currentPage)
+        }
+    }
+    
     // 데이터 변경 이벤트 - 클로저로 이벤트를 전달해주는 것임 변경되었다고
     var notifyTodosChanged : (([Todo]) -> Void)? = nil
     
@@ -59,6 +76,9 @@ class TodosVM {
     
     // 검색결과 없음 여부 이벤트
     var notifySearchDataNotFound : ((_ noContent: Bool) -> Void)? = nil
+    
+    // 다음페이지 있는지  이벤트
+    var notifyHasNextPage : ((_ hasNext: Bool) -> Void)? = nil
     
     init(){
         print(#fileID, #function, #line, "- ")
@@ -85,9 +105,16 @@ class TodosVM {
             return
         }
         
+        guard pageInfo?.hasNext() ?? true else {
+            return print("다음페이지 없음")
+        }
+        
         self.notifySearchDataNotFound?(false)
         
-        self.todos = [] // 검색시 일단 가지고 있는 todo 비우고 추가해야 바로 결과를 볼 수 있음
+        if page == 1 {
+            self.todos = []
+        }
+  
         
         isLoading = true
         
@@ -108,14 +135,14 @@ class TodosVM {
                         } else {
                             self.todos.append(contentsOf: fetchedTodos)
                         }
-                        
+                        self.pageInfo = pageInfo
                     }
                 case .failure(let failure):
                     print("failure: \(failure)")
                     self.isLoading = false
                     self.handleError(failure)
                 }
-                
+                self.notifyRefreshEnded?()
             })
         })
     }
@@ -123,8 +150,19 @@ class TodosVM {
     /// 더 가져오기
     func fetchMore(){
         print(#fileID, #function, #line, "- ")
-        self.fetchTodos(page: currentPage + 1)
         
+        // 다음페이지가 반드시 있어야 하고 로딩중이 아니여야 한다.
+        guard let pageInfo = self.pageInfo,
+              pageInfo.hasNext(),
+              !isLoading else {
+            return print("다음페이지가 없다")
+        }
+        
+        if searchTerm.count > 0 { // 검색어가 있으면
+            self.searchTodos(searchTerm: searchTerm, page: self.currentPage + 1)
+        } else {
+            self.fetchTodos(page: currentPage + 1)
+        }
     }
     
     
@@ -150,15 +188,14 @@ class TodosVM {
                 switch result {
                 case .success(let response):
                     // 페이지 갱신
-                    self.currentPage = page
-                    
-                    if let fetchedTodos : [Todo] = response.data{
+                    if let fetchedTodos : [Todo] = response.data,
+                       let pageInfo : Meta = response.meta{
                         if page == 1 {
-                            self.todos = fetchedTodos // 첫 페이지면 값을 넣고
+                            self.todos = fetchedTodos
                         } else {
-                            self.todos.append(contentsOf: fetchedTodos) // 페이징 처리라면 기존 값에 값 추가
+                            self.todos.append(contentsOf: fetchedTodos)
                         }
-                        
+                        self.pageInfo = pageInfo // 응답으로 들어온 pageInfo
                     }
                 case .failure(let failure):
                     print("failure: \(failure)")

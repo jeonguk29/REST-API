@@ -41,6 +41,21 @@ class MainVC: UIViewController{
         return refreshControl
     }()
     
+    // 검색결과를 찾지 못했다 뷰
+    lazy var searchDataNotFoundView: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0,
+                                        width: myTableView.bounds.width,
+                                        height: 300))
+        let label = UILabel()
+        label.text = "검색결과를 찾을 수 없습니다 🗑️"
+        label.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(label)
+        NSLayoutConstraint.activate([
+            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
+        return view
+    }()
     
     var searchTermInputWorkItem : DispatchWorkItem? = nil
     
@@ -55,7 +70,7 @@ class MainVC: UIViewController{
         self.myTableView.delegate = self
         self.myTableView.refreshControl = refreshControl
         self.myTableView.tableFooterView = bottomIndicator
-        
+   
         // ===
         // 서치바 설정
         self.searchBar.searchTextField.addTarget(self, action: #selector(searchTermChanged(_:)), for: .editingChanged)
@@ -101,6 +116,15 @@ class MainVC: UIViewController{
             }
         }
         
+        // 검색결과 없음 여부
+        self.todosVM.notifySearchDataNotFound = { [weak self] notFound in
+            guard let self = self else { return }
+            print(#fileID, #function, #line, "- notFound: \(notFound)")
+            DispatchQueue.main.async {
+                self.myTableView.backgroundView = notFound ? self.searchDataNotFoundView : nil
+            }
+        }
+        
     }
 }
 
@@ -134,7 +158,7 @@ extension MainVC {
                     
                     print(#fileID, #function, #line, "- 검색 API 호출하기 userInput: \(userInput)")
                     #warning("TODO : - 검색 API 호출하기")
-                    
+                    self.todosVM.todos = []
                     // 뷰모델 검색어 갱신
                     self.todosVM.searchTerm = userInput
                 }

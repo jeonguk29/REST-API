@@ -21,7 +21,7 @@ class TodosVM {
     // MARK: - step3
     var currentPage: Int = 1 {
         didSet {
-            print(#fileID, #function, #line, "- ") // API 성공시 페이지가 바뀜 
+            print(#fileID, #function, #line, "- ") // API 성공시 페이지가 바뀜
             self.notifyCurrentPageChanged?(currentPage)
         }
     }
@@ -57,11 +57,14 @@ class TodosVM {
     // 리프레시 완료 이벤트
     var notifyRefreshEnded : (() -> Void)? = nil
     
+    // 검색결과 없음 여부 이벤트
+    var notifySearchDataNotFound : ((_ noContent: Bool) -> Void)? = nil
+    
     init(){
         print(#fileID, #function, #line, "- ")
         
         fetchTodos()
-
+        
     }
     
     
@@ -81,6 +84,8 @@ class TodosVM {
             print("로딩중입니다...")
             return
         }
+        
+        self.notifySearchDataNotFound?(false)
         
         self.todos = [] // 검색시 일단 가지고 있는 todo 비우고 추가해야 바로 결과를 볼 수 있음
         
@@ -103,14 +108,14 @@ class TodosVM {
                         } else {
                             self.todos.append(contentsOf: fetchedTodos)
                         }
-                     
+                        
                     }
                 case .failure(let failure):
                     print("failure: \(failure)")
                     self.isLoading = false
                     self.handleError(failure)
                 }
-
+                
             })
         })
     }
@@ -119,7 +124,7 @@ class TodosVM {
     func fetchMore(){
         print(#fileID, #function, #line, "- ")
         self.fetchTodos(page: currentPage + 1)
-     
+        
     }
     
     
@@ -153,7 +158,7 @@ class TodosVM {
                         } else {
                             self.todos.append(contentsOf: fetchedTodos) // 페이징 처리라면 기존 값에 값 추가
                         }
-                       
+                        
                     }
                 case .failure(let failure):
                     print("failure: \(failure)")
@@ -165,7 +170,7 @@ class TodosVM {
             })
             
         })
-      
+        
         
     }
     
@@ -180,22 +185,25 @@ class TodosVM {
     /// - Parameter err: API 에러
     fileprivate func handleError(_ err: Error) {
         
-        if err is TodosAPI.ApiError {
-            let apiError = err as! TodosAPI.ApiError
-            
-            print("handleError : err : \(apiError.info)")
-            
-            switch apiError {
-            case .noContent:
-                print("컨텐츠 없음")
-            case .unauthorized:
-                print("인증안됨")
-            case .decodingError:
-                print("디코딩 에러입니당ㅇㅇ")
-            default:
-                print("default")
-            }
+        guard let apiError = err as? TodosAPI.ApiError else {
+            print("모르는 에러입니다.")
+            return
         }
+        
+        print("handleError : err : \(apiError.info)")
+        
+        switch apiError {
+        case .noContent:
+            print("컨텐츠 없음")
+            self.notifySearchDataNotFound?(true) // 검색결과 없으면 참으로 터트리기
+        case .unauthorized:
+            print("인증안됨")
+        case .decodingError:
+            print("디코딩 에러입니당ㅇㅇ")
+        default:
+            print("default")
+        }
+        
         
     }// handleError
     

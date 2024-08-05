@@ -19,6 +19,9 @@ class TodoCell: UITableViewCell {
     
     var cellData : Todo? = nil
     
+    // 삭제액션
+    var onDeleteActionEvent: ((Int) -> Void)? = nil
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         print(#fileID, #function, #line, "- ")
@@ -46,6 +49,11 @@ class TodoCell: UITableViewCell {
     
     @IBAction func onDeleteBtnClicked(_ sender: UIButton) {
         print(#fileID, #function, #line, "- <#comment#>")
+        
+        // 💁 1.Cell에서 이벤트 호출
+        guard let id = cellData?.id else { return }
+        self.onDeleteActionEvent?(id) // 이벤트를 메인 뷰 컨트롤러에게 전달하는 것임 
+        
     }
     
 }

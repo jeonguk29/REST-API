@@ -251,6 +251,41 @@ class TodosVM {
         })
     }
     
+    /// 단일 할일 삭제
+    /// - Parameter id: 할일 아이디
+    func deleteATodo(_ id: Int) {
+        print(#fileID, #function, #line, "- id: \(id)")
+        
+        if isLoading {
+            print("로딩중이다")
+            return
+        }
+        
+        self.isLoading = true
+        
+        TodosAPI.deleteATodo(id: id, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                self.isLoading = false
+                // 페이지 갱신
+                if let deletedTodo : Todo = response.data,
+                   let deletedTodoId : Int = deletedTodo.id{
+                    
+                    // 삭제된 아이템 찾아서 그 녀석만 현재 리스트에서 빼기 - 서버에서는 지웠으니까 보이지는 화면에서도 지우는 것임 
+                    self.todos = self.todos.filter{ $0.id ?? 0 != deletedTodoId }
+                }
+            case .failure(let failure):
+                print("failure: \(failure)")
+                self.isLoading = false
+                self.handleError(failure)
+            }
+        })
+    }
+    
+
+   
+    
     /// 데이터 리프레시
     func fetchRefresh(){
         print(#fileID, #function, #line, "- ")

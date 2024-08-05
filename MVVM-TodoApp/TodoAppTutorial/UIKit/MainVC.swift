@@ -219,6 +219,27 @@ extension MainVC {
         // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
     }
+    
+    /// 할일 삭제 얼럿 띄우기
+    @objc fileprivate func showDeleteTodoAlert(_ id: Int){
+        //1. Create the alert controller.
+        let alert = UIAlertController(title: "할일 삭제", message: "id:\(id) 할일을 삭제하시겠습니까?", preferredStyle: .alert)
+
+        let submitAction = UIAlertAction(title: "확인", style: .default, handler: { _ in
+            // 뷰모델 -> 해당 할일 삭제
+            self.todosVM.deleteATodo(id)
+        })
+        
+        let closeAction = UIAlertAction(title: "닫기", style: .cancel)
+        
+        alert.addAction(submitAction)
+        
+        alert.addAction(closeAction)
+        
+        // 4. Present the alert.
+        self.present(alert, animated: true, completion: nil)
+    }
+    
 }
 
 
@@ -231,6 +252,13 @@ extension MainVC {
         
         // 💁 1.뷰모델한테 시키기
         self.todosVM.fetchRefresh()
+    }
+    
+    /// 쎌의 삭제 버튼 클릭시
+    /// - Parameter id: <#id description#>
+    fileprivate func onDeleteItemAction(_ id: Int) {
+        print(#fileID, #function, #line, "- id: \(id)")
+        self.showDeleteTodoAlert(id)
     }
     
     /// 검색어가 입력되었다
@@ -285,6 +313,20 @@ extension MainVC : UITableViewDataSource {
         
         // 데이터 썔에 넣어주기
         cell.updateUI(cellData)
+        
+       
+        // 💁 2.Cell에서 이벤트 호출을 뷰컨에서 처리할 로직을 정의
+//        cell.onDeleteActionEvent = {
+//            print(#fileID, #function, #line, "- id: \($0)")
+//            self.todosVM.deleteATodo($0)
+//        }
+        
+        /*
+         (Int) -> Void : 클로저가 들어옴 해당 클로저 부분을 함수로 바꿀수가 있는 것임
+         클로저에 대한 부분을 위처럼 넣어도 되지만 cellForRowAt에 대한 부분이 너무 비대해짐 그래서 해당 부분을 함수로 빼서 넣어주는 방법이 좋음
+
+         */
+        cell.onDeleteActionEvent = onDeleteItemAction
         
         return cell
         

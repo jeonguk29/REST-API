@@ -62,6 +62,15 @@ class TodosVM {
         }
     }
     
+    // 선택된 할일들
+    var selectedTodoIds: Set<Int> = [] {
+        didSet {
+            print(#fileID, #function, #line, "- selectedTodoIds: \(selectedTodoIds)")
+            self.notifySelectedTodoIdsChanged?(Array(selectedTodoIds)) // 아이템이 변경되었다고 알림 호출
+        }
+    }
+    
+    
     // 데이터 변경 이벤트 - 클로저로 이벤트를 전달해주는 것임 변경되었다고
     var notifyTodosChanged : (([Todo]) -> Void)? = nil
     
@@ -86,6 +95,8 @@ class TodosVM {
     //  에러발생 이벤트
     var notifyErrorOccured : ((_ errMsg: String) -> Void)? = nil
     
+    //  선택된 할일들 변경 이벤트
+    var notifySelectedTodoIdsChanged : ((_ selectedIds: [Int]) -> Void)? = nil
     
     init(){
         print(#fileID, #function, #line, "- ")
@@ -324,6 +335,18 @@ class TodosVM {
   
     }
    
+    /// 선택된 할일 처리
+    /// - Parameters:
+    ///   - selectedTodoId:
+    ///   - isOn:
+    func handleTodoSelection(_ selectedTodoId: Int, isOn: Bool){
+        if isOn {
+            self.selectedTodoIds.insert(selectedTodoId)
+        } else {
+            self.selectedTodoIds.remove(selectedTodoId)
+        }
+    }
+    
     
     /// 데이터 리프레시
     func fetchRefresh(){

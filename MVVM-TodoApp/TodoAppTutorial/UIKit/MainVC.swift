@@ -24,6 +24,8 @@ class MainVC: UIViewController{
     
     @IBOutlet var showAddTodoAlertBtn: UIButton!
     
+    @IBOutlet var selectedTodosInfoLabel: UILabel!
+    
     // 바텀 인디케이터뷰 : lazy 즉 사용할때 메모리에 올림
     lazy var bottomIndicator : UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -173,6 +175,20 @@ class MainVC: UIViewController{
                 self.showErrAlert(errMsg: errMsg)
             }
         }
+        
+        // 선택 아이템 변경 알림을 처리
+        self.todosVM.notifySelectedTodoIdsChanged = { [weak self] selectedTodoIds in
+            guard let self = self else { return }
+            print(#fileID, #function, #line, "")
+            DispatchQueue.main.async {
+                
+                // 안에 id 배열을 하나의 문자열로 만들어 대입
+                let idsInfoString = selectedTodoIds.map{ "\($0)" }.joined(separator: ", ")
+                
+                self.selectedTodosInfoLabel.text = "선택된 할일들 : [" + idsInfoString + "]"
+            }
+            
+        }
     }
 }
 
@@ -297,6 +313,16 @@ extension MainVC {
         self.showEditTodoAlert(id, editedTitle)
     }
     
+    /// 쎌의 아이템 선택 이벤트
+    /// - Parameters:
+    ///   - id: 아이디
+    ///   - isOn: 선택여부
+    fileprivate func onSelectionItemAction(_ id: Int, _ isOn: Bool) {
+        print(#fileID, #function, #line, "- id: \(id), isOn: \(isOn)")
+        #warning("TODO : - 선택된 요소 변경하라고 뷰모델 한테 알리기")
+        self.todosVM.handleTodoSelection(id, isOn: isOn)
+    }
+    
     /// 검색어가 입력되었다
     /// - Parameter sender:
     @objc fileprivate func searchTermChanged(_ sender: UITextField){
@@ -348,7 +374,7 @@ extension MainVC : UITableViewDataSource {
         let cellData = self.todos[indexPath.row]
         
         // 데이터 썔에 넣어주기
-        cell.updateUI(cellData)
+        cell.updateUI(cellData, self.todosVM.selectedTodoIds)
         
        
         // 💁 2.Cell에서 이벤트 호출을 뷰컨에서 처리할 로직을 정의
@@ -365,6 +391,8 @@ extension MainVC : UITableViewDataSource {
         cell.onDeleteActionEvent = onDeleteItemAction
         
         cell.onEditActionEvent = onEditItemAction
+        
+        cell.onSelectedActionEvent = onSelectionItemAction(_:_:)
         
         return cell
         

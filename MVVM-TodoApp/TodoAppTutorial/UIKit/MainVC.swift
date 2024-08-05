@@ -22,6 +22,8 @@ class MainVC: UIViewController{
     
     @IBOutlet var searchBar: UISearchBar!
     
+    @IBOutlet var showAddTodoAlertBtn: UIButton!
+    
     // 바텀 인디케이터뷰 : lazy 즉 사용할때 메모리에 올림
     lazy var bottomIndicator : UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -93,6 +95,9 @@ class MainVC: UIViewController{
         // .editingChanged 글자 입력이 되었을때 실행될 이벤트 처리 Enum이라 다양한 값이 있음
         // ===
         
+        // 버튼 액션 설정
+        self.showAddTodoAlertBtn.addTarget(self, action: #selector(showAddTodoAlert), for: .touchUpInside)
+        
         // MARK: - 뷰모델 설정 부분
         
         // 뷰모델 이벤트 받기 - 뷰 - 뷰모델 바인딩 - 묶기
@@ -152,6 +157,39 @@ class MainVC: UIViewController{
         
     }
 }
+
+//MARK: - 얼럿
+extension MainVC {
+    
+   
+    /// 할일 추가 얼럿 띄우기
+    @objc fileprivate func showAddTodoAlert(){
+        //1. Create the alert controller.
+        let alert = UIAlertController(title: "추가", message: "할일을 입력해주세요", preferredStyle: .alert)
+
+        //2. Add the text field. You can configure it however you need.
+        alert.addTextField { (textField) in
+            textField.placeholder = "예) 빡코딩하기"
+        }
+
+        // 3. Grab the value from the text field, and print it when the user clicks OK.
+        let confirmAction = UIAlertAction(title: "확인", style: .default, handler: { [weak alert] (_) in
+            if let userInput = alert?.textFields?[0].text {
+                print("userInput: \(userInput)")
+                //self.todosVM.addATodo(userInput)
+            }
+        })
+        
+        let closeAction = UIAlertAction(title: "닫기", style: .destructive)// .destructive 닫기는 빨간색 처리
+        
+        alert.addAction(closeAction)
+        alert.addAction(confirmAction)
+
+        // 4. Present the alert.
+        self.present(alert, animated: true, completion: nil)
+    }
+}
+
 
 //MARK: - 액션들
 extension MainVC {

@@ -155,6 +155,24 @@ class MainVC: UIViewController{
             }
         }
         
+        // 할일 추가완료
+        self.todosVM.notifyTodoAdded = { [weak self] in
+            guard let self = self else { return }
+            print(#fileID, #function, #line, "")
+            DispatchQueue.main.async {
+                // 스크롤뷰를 처음으로 올림
+                self.myTableView.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            }
+        }
+        
+        // 에러 발생시
+        self.todosVM.notifyErrorOccured = { [weak self] errMsg in
+            guard let self = self else { return }
+            print(#fileID, #function, #line, "")
+            DispatchQueue.main.async {
+                self.showErrAlert(errMsg: errMsg)
+            }
+        }
     }
 }
 
@@ -176,7 +194,7 @@ extension MainVC {
         let confirmAction = UIAlertAction(title: "확인", style: .default, handler: { [weak alert] (_) in
             if let userInput = alert?.textFields?[0].text {
                 print("userInput: \(userInput)")
-                //self.todosVM.addATodo(userInput)
+                self.todosVM.addATodo(userInput)
             }
         })
         
@@ -185,6 +203,19 @@ extension MainVC {
         alert.addAction(closeAction)
         alert.addAction(confirmAction)
 
+        // 4. Present the alert.
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    /// 에러 얼럿 띄우기
+    @objc fileprivate func showErrAlert(errMsg: String){
+        //1. Create the alert controller.
+        let alert = UIAlertController(title: "안내", message: errMsg, preferredStyle: .alert)
+
+        let closeAction = UIAlertAction(title: "닫기", style: .cancel)
+        
+        alert.addAction(closeAction)
+        
         // 4. Present the alert.
         self.present(alert, animated: true, completion: nil)
     }

@@ -319,6 +319,11 @@ extension TodosAPI {
             switch httpResponse.statusCode {
             case 401:
                 return completion(.failure(ApiError.unauthorized))
+            case 422:
+                if let data = data,
+                   let errResponse = try? JSONDecoder().decode(ErrorResponse.self, from: data) {
+                    return completion(.failure(ApiError.errResponseFromServer(errResponse)))
+                }
             case 204:
                 return completion(.failure(ApiError.noContent))
                 

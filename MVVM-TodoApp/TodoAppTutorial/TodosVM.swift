@@ -80,6 +80,13 @@ class TodosVM {
     // 다음페이지 있는지  이벤트
     var notifyHasNextPage : ((_ hasNext: Bool) -> Void)? = nil
     
+    //  할일 추가완료 이벤트
+    var notifyTodoAdded : (() -> Void)? = nil
+    
+    //  에러발생 이벤트
+    var notifyErrorOccured : ((_ errMsg: String) -> Void)? = nil
+    
+    
     init(){
         print(#fileID, #function, #line, "- ")
         
@@ -211,6 +218,39 @@ class TodosVM {
         
     }
     
+    
+    /// 할일추가
+    /// - Parameter title: 할일 타이틀
+    func addATodo(_ title: String) {
+        print(#fileID, #function, #line, "- title: \(title)")
+        
+        if isLoading {
+            print("로딩중이다")
+            return
+        }
+        
+        self.isLoading = true
+        
+        TodosAPI.addATodoAndFetchTodos(title: title, completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                self.isLoading = false
+                // 페이지 갱신
+                if let fetchedTodos : [Todo] = response.data,
+                   let pageInfo : Meta = response.meta{
+                    self.todos = fetchedTodos
+                    self.pageInfo = pageInfo
+                    self.notifyTodoAdded?()
+                }
+            case .failure(let failure):
+                print("failure: \(failure)")
+                self.isLoading = false
+                self.handleError(failure)
+            }
+        })
+    }
+    
     /// 데이터 리프레시
     func fetchRefresh(){
         print(#fileID, #function, #line, "- ")
@@ -237,6 +277,9 @@ class TodosVM {
             print("인증안됨")
         case .decodingError:
             print("디코딩 에러입니당ㅇㅇ")
+        case .errResponseFromServer:
+            print("서버에서 온 에러입니다 : \(apiError.info)") // 에러 관련 클로저를 여기서 터트려주기
+            self.notifyErrorOccured?(apiError.info)
         default:
             print("default")
         }

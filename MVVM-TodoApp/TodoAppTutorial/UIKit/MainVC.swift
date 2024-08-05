@@ -240,6 +240,33 @@ extension MainVC {
         self.present(alert, animated: true, completion: nil)
     }
     
+    /// 할일 수정 얼럿 띄우기
+    @objc fileprivate func showEditTodoAlert(_ id: Int, _ existingTitle: String){
+        //1. Create the alert controller.
+        let alert = UIAlertController(title: "수정", message: "id: \(id)", preferredStyle: .alert)
+
+        //2. Add the text field. You can configure it however you need.
+        alert.addTextField { (textField) in
+            textField.placeholder = "예) 빡코딩하기"
+            textField.text = existingTitle
+        }
+
+        // 3. Grab the value from the text field, and print it when the user clicks OK.
+        let confirmAction = UIAlertAction(title: "확인", style: .default, handler: { [weak alert] (_) in
+            if let userInput = alert?.textFields?[0].text {
+                print("userInput: \(userInput)")
+                self.todosVM.editATodo(id, userInput)
+            }
+        })
+        
+        let closeAction = UIAlertAction(title: "닫기", style: .destructive)
+        
+        alert.addAction(closeAction)
+        alert.addAction(confirmAction)
+
+        // 4. Present the alert.
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 
@@ -259,6 +286,15 @@ extension MainVC {
     fileprivate func onDeleteItemAction(_ id: Int) {
         print(#fileID, #function, #line, "- id: \(id)")
         self.showDeleteTodoAlert(id)
+    }
+    
+    /// 쎌의 수정 버튼 클릭시
+    /// - Parameters:
+    ///   - id: 아이디
+    ///   - editedTitle: 변경된 타이틀
+    fileprivate func onEditItemAction(_ id: Int, _ editedTitle: String) {
+        print(#fileID, #function, #line, "- id: \(id), editedTitle: \(editedTitle)")
+        self.showEditTodoAlert(id, editedTitle)
     }
     
     /// 검색어가 입력되었다
@@ -327,6 +363,8 @@ extension MainVC : UITableViewDataSource {
 
          */
         cell.onDeleteActionEvent = onDeleteItemAction
+        
+        cell.onEditActionEvent = onEditItemAction
         
         return cell
         

@@ -22,6 +22,10 @@ class TodoCell: UITableViewCell {
     // 삭제액션
     var onDeleteActionEvent: ((Int) -> Void)? = nil
     
+    // 수정액션
+    var onEditActionEvent: ((_ id: Int, _ title: String) -> Void)? = nil
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         print(#fileID, #function, #line, "- ")
@@ -44,6 +48,11 @@ class TodoCell: UITableViewCell {
     
     @IBAction func onEditBtnClicked(_ sender: UIButton) {
         print(#fileID, #function, #line, "- <#comment#>")
+        
+        guard let id = cellData?.id,
+              let title = cellData?.title else { return }
+        
+        self.onEditActionEvent?(id, title)
     }
     
     

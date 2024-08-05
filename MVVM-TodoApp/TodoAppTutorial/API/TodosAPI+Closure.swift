@@ -96,5 +96,37 @@ extension TodosAPI {
         }
     }
     
+    /// 할일 수정 -> 해당 수정된 데이터 Fetch
+    /// - Parameters:
+    ///   - title:
+    ///   - isDone:
+    ///   - completion:
+    static func editATodoAndFetchATodo(id: Int,
+                                      title: String,
+                                      isDone: Bool = false,
+                                      completion: @escaping (Result<BaseResponse<Todo>, ApiError>) -> Void){
+        // 1
+        self.editTodo(id: id, title: title, completion: { result in
+            switch result {
+                // 1-1
+            case .success(_):
+                // 2
+                self.fetchATodo(id: id, completion: {
+                    switch $0 {
+                        // 2-1
+                    case .success(let data):
+                        completion(.success(data))
+                        // 2-2
+                    case .failure(let failure):
+                        completion(.failure(failure))
+                    }
+                })
+                // 1-2
+            case .failure(let failure):
+                completion(.failure(failure))
+            }
+        })
+        
+    }
 }
 

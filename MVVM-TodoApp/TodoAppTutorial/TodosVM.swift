@@ -283,7 +283,46 @@ class TodosVM {
         })
     }
     
-
+    /// 할일 수정
+    /// - Parameter title: 할일 타이틀
+    func editATodo(_ id: Int, _ editedTitle: String) {
+        print(#fileID, #function, #line, "- id: \(id), editedTitle: \(editedTitle)")
+        
+        if isLoading {
+            print("로딩중이다")
+            return
+        }
+        
+        self.isLoading = true
+        
+        TodosAPI.editTodo(id: id,
+                          title: editedTitle,
+                          completion: { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let response):
+                self.isLoading = false
+                // 페이지 갱신
+                if let editedTodo : Todo = response.data,
+                   let editedTodoId : Int = editedTodo.id,
+                   let editedIndex = self.todos.firstIndex(where: { $0.id ?? 0 == editedTodoId }) {
+                    
+                    // 지금 수정한 녀석 아이디를 가지고 있는 인덱스 찾기
+                    // 그 녀석을 바꾸기 - 서버에서는 수정 되었으니까 보이지는 화면에서도 수정
+                    self.todos[editedIndex] = editedTodo
+                    /*
+                     todos 변경시
+                     self.notifyTodosChanged?(todos) 가 작동되서 화면도 업데이트
+                     */
+                }
+            case .failure(let failure):
+                print("failure: \(failure)")
+                self.isLoading = false
+                self.handleError(failure)
+            }
+        })
+  
+    }
    
     
     /// 데이터 리프레시
